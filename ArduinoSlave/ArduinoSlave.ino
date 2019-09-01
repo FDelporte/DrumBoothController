@@ -4,8 +4,12 @@
 
 RF24 radio(9, 10); // CE, CSN
 const byte address[6] = "00001";
-boolean button_state = 0;
-int led_pin = 3;
+
+byte colorR = 0xff;
+byte colorG = 0xff;
+byte colorB = 0xff;
+
+byte effect = 0x00;
 
 void setup() {
   pinMode(6, OUTPUT);
@@ -19,16 +23,22 @@ void setup() {
 void loop() {
   if (radio.available()) {
     //Looking for the data.
-    char text[32] = "";                 //Saving the incoming data
-    radio.read(&text, sizeof(text));    //Reading the data
-    radio.read(&button_state, sizeof(button_state));    //Reading the data
-  
-    if(button_state == HIGH) {
-      digitalWrite(6, HIGH);
-      Serial.println(text);
-  } else {
-    digitalWrite(6, LOW);
-    Serial.println(text);}
+    radio.read(&colorR, sizeof(colorR));
+    radio.read(&colorG, sizeof(colorG));
+    radio.read(&colorB, sizeof(colorB));
+    radio.read(&effect, sizeof(effect));
+
+    Serial.print("Colors: ");
+    Serial.print(colorR, HEX);
+    Serial.print("/");
+    Serial.print(colorG, HEX);
+    Serial.print("/");
+    Serial.print(colorB, HEX);
+    Serial.print(", effect: ");
+    Serial.print(effect, HEX);
+    Serial.println("");
+
+    // TODO set the RBG led output
   }
   
   delay(5);

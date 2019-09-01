@@ -4,11 +4,18 @@
 
 RF24 radio(9, 10); // CE, CSN         
 const byte address[6] = "00001";     //Byte of array representing the address. This is the address where we will send the data. This should be same on the receiving side.
-int button_pin = 2;
-boolean button_state = 0;
+
+int potPinR = 0;
+int potPinG = 1;
+int potPinB = 2;
+
+byte colorR = 0xff;
+byte colorG = 0xff;
+byte colorB = 0xff;
+
+byte effect = 0x00;
 
 void setup() {
-  pinMode(button_pin, INPUT);
   radio.begin();                  //Starting the Wireless communication
   radio.openWritingPipe(address); //Setting the address where we will send the data
   radio.setPALevel(RF24_PA_MIN);  //You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
@@ -16,17 +23,31 @@ void setup() {
 }
 
 void loop() {
-  button_state = digitalRead(button_pin);
+  // Read the selected color
+  colorR = analogRead(potPinR);
+  colorG = analogRead(potPinG);
+  colorB = analogRead(potPinB);
 
-  if(button_state == HIGH) {
-    const char text[] = "Your Button State is HIGH";
-    radio.write(&text, sizeof(text));                  //Sending the message to receiver
-  } else {
-    const char text[] = "Your Button State is LOW";
-    radio.write(&text, sizeof(text));                  //Sending the message to receiver 
-  }
+  Serial.print("Colors: ");
+  Serial.print(colorR, HEX);
+  Serial.print("/");
+  Serial.print(colorG, HEX);
+  Serial.print("/");
+  Serial.print(colorB, HEX);
+  Serial.print(", effect: ");
+  Serial.print(effect, HEX);
+  Serial.println("");
+  
+  // Read the selected effect
 
-  radio.write(&button_state, sizeof(button_state));  //Sending the message to receiver 
+  // Transmit the values
+  radio.write(&colorR, sizeof(colorR));
+  radio.write(&colorG, sizeof(colorG));
+  radio.write(&colorB, sizeof(colorB));
+  radio.write(&effect, sizeof(effect));
+
+  // Put on the display
+
   
   delay(1000);
 }
