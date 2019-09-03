@@ -6,23 +6,29 @@ Arduino project with
 ## One Arduino code for multiple Arduino boards
 
 ### One master board
+* Switch to configure as master board
 * 3 pot meters for R/G/B mixing
-* 1 hex switch for effect selection
-* 1 display for visualization of selected color and effect + connected slaves
-* Transmits color code and effect
+* Radio to transmit selected color codes to the slaves
 * Controls own RGB led strip
 
 ### Multiple slave boards
-* 1 hex switch for addressing (to let the master known if alive)
+* Radio to receive selected color codes from the master
 * Control of RGB led strip according to received color code and effect
+
+## Wiring
+Slave is identical to master for radio and led strip, but doesn't have the master switch and potentio meters.
+
+![Master Arduino](Wiring/wirings_bb.jpg)
 	
 ## Components
 
 ### LED Strip
-Type WS2812IC 
+* Type WS2812IC 
+* https://www.dx.com/p/nrf24l01-2-4ghz-enhanced-wireless-modules-black-4-pcs-2057721
 
 ### Wireless
-Via NRF24l01, e.g. https://www.dx.com/p/nrf24l01-2-4ghz-enhanced-wireless-modules-black-4-pcs-2057721
+* NRF24l01
+* https://www.dx.com/p/nrf24l01-2-4ghz-enhanced-wireless-modules-black-4-pcs-2057721
 
 ### Dependencies
 Download and add to Arduino Libraries (e.g. in "C:\Program Files (x86)\Arduino\libraries"):
