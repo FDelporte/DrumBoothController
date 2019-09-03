@@ -23,8 +23,8 @@ Slave is identical to master for radio and led strip, but doesn't have the maste
 ## Components
 
 ### LED Strip
-* Type WS2812IC 
-* https://www.dx.com/p/nrf24l01-2-4ghz-enhanced-wireless-modules-black-4-pcs-2057721
+* WS2812IC 
+* https://www.dx.com/p/5mroll-DC5V-ws2812b-150led-300led-ws2812IC-builtin-Individually-Addressable-3060ledsm-5050-RGB-Dream-Color-LED-Strip-Light-5m-60led-white-IP65-Changeable-2067924
 
 ### Wireless
 * NRF24l01
