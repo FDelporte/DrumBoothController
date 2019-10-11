@@ -30,12 +30,25 @@ Slave is identical to master for radio and led strip, but doesn't have the maste
 * NRF24l01
 * https://www.dx.com/p/nrf24l01-2-4ghz-enhanced-wireless-modules-black-4-pcs-2057721
 
-### Dependencies
-Download and add to Arduino Libraries (e.g. in "C:\Program Files (x86)\Arduino\libraries"):
-* https://github.com/nRF24/RF24
-* https://github.com/FastLED/FastLED/archive/master.zip
+## Libraries to install in Arduino IDE
+* FastLED by Daniel Garcia
+* RF24 by TMRh20
 
 ## Inspired by
-* https://create.arduino.cc/projecthub/muhammad-aqib/nrf24l01-interfacing-with-arduino-wireless-communication-0c13d4?ref=tag&ref_id=wireless&offset=10
-* https://www.element14.com/community/community/raspberry-pi/raspberrypi2/blog/2015/04/07/raspberry-pi-2-gpio-usage-with-nrf24l01-arduino
 * https://randomnerdtutorials.com/guide-for-ws2812b-addressable-rgb-led-strip-with-arduino/
+
+### Organizing your Arduino code
+* [Multiple source files in an Arduino project](https://subethasoftware.com/2013/04/10/multiple-source-files-in-an-arduino-project/)
+
+### Arduino and WS2812 addressable RGH
+* [Guide for WS2812B Addressable RGB LED Strip with Arduino](https://randomnerdtutorials.com/guide-for-ws2812b-addressable-rgb-led-strip-with-arduino/)
+
+### Arduino and NRF24L01 wireless
+* [Arduino Wireless Communication – NRF24L01 Tutorial](https://howtomechatronics.com/tutorials/arduino/arduino-wireless-communication-nrf24l01-tutorial/)
+* [nRF24L01 Interfacing with Arduino | Wireless Communication ](https://create.arduino.cc/projecthub/muhammad-aqib/nrf24l01-interfacing-with-arduino-wireless-communication-0c13d4?ref=tag&ref_id=wireless&offset=10)
+* [NRFLite](https://github.com/dparson55/NRFLite)
+
+### Arduino and Mosquitto
+* [MQTT Tutorial for Raspberry Pi, Arduino, and ESP8266](https://www.baldengineer.com/mqtt-tutorial.html)
+
+
