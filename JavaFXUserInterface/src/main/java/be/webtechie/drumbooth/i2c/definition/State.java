@@ -1,4 +1,4 @@
-package be.webtechie.i2c.definition;
+package be.webtechie.drumbooth.i2c.definition;
 
 public enum State {
     STATE_ON((byte) 0xFF),

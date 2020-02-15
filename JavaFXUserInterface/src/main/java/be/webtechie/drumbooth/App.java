@@ -1,10 +1,10 @@
-package be.webtechie;
+package be.webtechie.drumbooth;
 
-import be.webtechie.i2c.RelayController;
-import be.webtechie.i2c.definition.Board;
-import be.webtechie.i2c.definition.Relay;
-import be.webtechie.i2c.definition.State;
-import be.webtechie.ui.ToggleSwitchScreen;
+import be.webtechie.drumbooth.i2c.RelayController;
+import be.webtechie.drumbooth.i2c.definition.Board;
+import be.webtechie.drumbooth.i2c.definition.Relay;
+import be.webtechie.drumbooth.i2c.definition.State;
+import be.webtechie.drumbooth.ui.ToggleSwitchScreen;
 import java.util.Arrays;
 import javafx.application.Application;
 import javafx.scene.Scene;

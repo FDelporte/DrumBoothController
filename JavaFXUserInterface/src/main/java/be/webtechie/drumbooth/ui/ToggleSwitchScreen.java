@@ -1,9 +1,9 @@
-package be.webtechie.ui;
+package be.webtechie.drumbooth.ui;
 
-import be.webtechie.i2c.RelayController;
-import be.webtechie.i2c.definition.Board;
-import be.webtechie.i2c.definition.Relay;
-import be.webtechie.i2c.definition.State;
+import be.webtechie.drumbooth.i2c.RelayController;
+import be.webtechie.drumbooth.i2c.definition.Board;
+import be.webtechie.drumbooth.i2c.definition.Relay;
+import be.webtechie.drumbooth.i2c.definition.State;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

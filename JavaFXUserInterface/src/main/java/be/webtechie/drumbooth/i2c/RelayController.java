@@ -1,8 +1,8 @@
-package be.webtechie.i2c;
+package be.webtechie.drumbooth.i2c;
 
-import be.webtechie.i2c.definition.Board;
-import be.webtechie.i2c.definition.Relay;
-import be.webtechie.i2c.definition.State;
+import be.webtechie.drumbooth.i2c.definition.Board;
+import be.webtechie.drumbooth.i2c.definition.Relay;
+import be.webtechie.drumbooth.i2c.definition.State;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
