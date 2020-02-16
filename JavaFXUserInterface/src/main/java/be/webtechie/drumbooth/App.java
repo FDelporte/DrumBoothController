@@ -29,12 +29,14 @@ public class App extends Application {
     public void start(Stage stage) {
         System.out.println("Starting application");
 
+        // TODO central controller so UI is updated on web change
+
         // Create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
         this.startSerialCommunication(serial);
 
         Undertow server = Undertow.builder()
-                .addHttpListener(8080, "localhost")
+                .addHttpListener(8080, "192.168.0.160")
                 .setHandler(new WebHandler(serial))
                 .build();
         server.start();
