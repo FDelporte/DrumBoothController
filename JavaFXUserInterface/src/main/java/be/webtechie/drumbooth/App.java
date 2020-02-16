@@ -31,7 +31,7 @@ public class App extends Application {
 
         // Create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
-
+        this.startSerialCommunication(serial, SERIAL_DEVICE);
 
         Undertow server = Undertow.builder()
                 .addHttpListener(8080, "localhost")
