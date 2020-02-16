@@ -6,7 +6,6 @@ import be.webtechie.drumbooth.i2c.definition.Relay;
 import be.webtechie.drumbooth.i2c.definition.State;
 import be.webtechie.drumbooth.server.WebHandler;
 import be.webtechie.drumbooth.ui.MenuWindow;
-import be.webtechie.drumbooth.ui.ToggleSwitchScreen;
 import com.pi4j.io.serial.Baud;
 import com.pi4j.io.serial.DataBits;
 import com.pi4j.io.serial.FlowControl;
@@ -24,6 +23,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private static final String SERIAL_DEVICE = "/dev/ttyACM0";
+    private static final Baud SERIAL_SPEED = Baud._115200;
 
     @Override
     public void start(Stage stage) {
@@ -31,7 +31,7 @@ public class App extends Application {
 
         // Create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
-        this.startSerialCommunication(serial, SERIAL_DEVICE);
+        this.startSerialCommunication(serial);
 
         Undertow server = Undertow.builder()
                 .addHttpListener(8080, "localhost")
@@ -60,14 +60,13 @@ public class App extends Application {
      * Start the serial communication
      *
      * @param serial Pi4J serial factory
-     * @param serialDevice the serial device
      */
-    private void startSerialCommunication(Serial serial, String serialDevice) {
+    private void startSerialCommunication(Serial serial) {
         try {
             // Create serial config object
             SerialConfig config = new SerialConfig();
-            config.device(serialDevice)
-                    .baud(Baud._38400)
+            config.device(SERIAL_DEVICE)
+                    .baud(SERIAL_SPEED)
                     .dataBits(DataBits._8)
                     .parity(Parity.NONE)
                     .stopBits(StopBits._1)
