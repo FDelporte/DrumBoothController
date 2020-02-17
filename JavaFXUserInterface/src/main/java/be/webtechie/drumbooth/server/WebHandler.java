@@ -1,8 +1,8 @@
 package be.webtechie.drumbooth.server;
 
+import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
-import be.webtechie.drumbooth.serial.SerialSender;
 import com.pi4j.io.serial.Serial;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
@@ -16,10 +16,15 @@ import javafx.scene.paint.Color;
  */
 public class WebHandler implements HttpHandler {
 
-    private final Serial serial;
+    private final EventManager eventManager;
 
-    public WebHandler(Serial serial) {
-        this.serial = serial;
+    /**
+     * Constructor
+     *
+     * @param eventManager {@link EventManager}
+     */
+    public WebHandler(EventManager eventManager) {
+        this.eventManager = eventManager;
     }
 
     /**
@@ -32,13 +37,13 @@ public class WebHandler implements HttpHandler {
         String path = exchange.getRequestPath();
 
         if (path.equals("/red-alert")) {
-            SerialSender.sendData(this.serial, new LedCommand(LedEffect.BLINKING, 10, Color.RED, Color.WHITE));
+            this.eventManager.sendEvent(new LedCommand(LedEffect.BLINKING, 10, Color.RED, Color.WHITE));
             this.returnSuccess(exchange, "RED ALERT message has been sent");
         } else if (path.equals("/all-white")) {
-            SerialSender.sendData(this.serial, new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
+            this.eventManager.sendEvent(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
             this.returnSuccess(exchange, "ALL WHITE message has been sent");
         } else if (path.equals("/all-out")) {
-            SerialSender.sendData(this.serial, new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
+            this.eventManager.sendEvent(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
             this.returnSuccess(exchange, "ALL OUT message has been sent");
         } else {
             this.returnError(exchange, StatusCodes.NOT_FOUND, "The requested path is not available");

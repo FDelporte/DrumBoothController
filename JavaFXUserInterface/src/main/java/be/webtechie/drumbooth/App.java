@@ -1,5 +1,6 @@
 package be.webtechie.drumbooth;
 
+import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.i2c.RelayController;
 import be.webtechie.drumbooth.i2c.definition.Board;
 import be.webtechie.drumbooth.i2c.definition.Relay;
@@ -24,22 +25,26 @@ public class App extends Application {
 
     private static final String SERIAL_DEVICE = "/dev/ttyACM0";
     private static final Baud SERIAL_SPEED = Baud._115200;
+    private static final int WEBSERVER_PORT = 8080;
+    private static final String WEBSERVER_HOST = "192.168.0.160";
+
+    private static EventManager eventManager;
 
     @Override
     public void start(Stage stage) {
         System.out.println("Starting application");
 
-        // TODO central controller so UI is updated on web change
-
         // Create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
+
+        // Initialize the EventManager
+        this.eventManager = new EventManager(serial);
+
+        // Initialize the serial communication with the Arduino board
         this.startSerialCommunication(serial);
 
-        Undertow server = Undertow.builder()
-                .addHttpListener(8080, "192.168.0.160")
-                .setHandler(new WebHandler(serial))
-                .build();
-        server.start();
+        // Initialize the web server
+        this.startWebServer();
 
         // Set all relays out
         RelayController.setRelays(
@@ -48,7 +53,7 @@ public class App extends Application {
                 State.STATE_OFF);
         System.out.println("All relays turned off");
 
-        var scene = new Scene(new MenuWindow(serial), 640, 480);
+        var scene = new Scene(new MenuWindow(this.eventManager), 640, 480);
         stage.setScene(scene);
         stage.setTitle("I²C Relay controller");
         stage.show();
@@ -64,6 +69,12 @@ public class App extends Application {
      * @param serial Pi4J serial factory
      */
     private void startSerialCommunication(Serial serial) {
+        // Can't be used on Windows (e.g. while developing and debugging)
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.indexOf("win") >= 0) {
+            return;
+        }
+
         try {
             // Create serial config object
             SerialConfig config = new SerialConfig();
@@ -80,7 +91,19 @@ public class App extends Application {
             // Open the serial port with the configuration
             serial.open(config);
         } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
+            System.err.println("Could not start serial communication, error: " + ex.getMessage());
+        }
+    }
+
+    private void startWebServer() {
+        try {
+            Undertow server = Undertow.builder()
+                    .addHttpListener(WEBSERVER_PORT, WEBSERVER_HOST)
+                    .setHandler(new WebHandler(this.eventManager))
+                    .build();
+            server.start();
+        } catch (Exception ex) {
+            System.err.println("Could not start web server, error: " + ex.getMessage());
         }
     }
 }

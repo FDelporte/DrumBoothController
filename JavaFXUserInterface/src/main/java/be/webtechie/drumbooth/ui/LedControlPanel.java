@@ -1,9 +1,9 @@
 package be.webtechie.drumbooth.ui;
 
+import be.webtechie.drumbooth.event.EventListener;
+import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
-import be.webtechie.drumbooth.serial.SerialSender;
-import com.pi4j.io.serial.Serial;
 import eu.hansolo.fx.colorselector.ColorSelector;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
@@ -14,9 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class LedControlPanel extends HBox {
+public class LedControlPanel extends HBox implements EventListener {
 
-    private final Serial serial;
+    private final EventManager eventManager;
 
     private final ColorSelector colorSelector1;
     private final ColorSelector colorSelector2;
@@ -35,10 +35,16 @@ public class LedControlPanel extends HBox {
     private LedEffect selectedLedEffect;
 
     /**
+     * Flag used to prevent endless loops when effect has changed from other component.
+     */
+    private boolean blockSending = false;
+
+    /**
      * Construct the UI.
      */
-    LedControlPanel(Serial serial) {
-        this.serial = serial;
+    LedControlPanel(EventManager eventManager) {
+        this.eventManager = eventManager;
+        this.eventManager.addListener(this);
 
         this.setSpacing(25);
 
@@ -155,6 +161,11 @@ public class LedControlPanel extends HBox {
             return;
         }
 
+        if (this.blockSending) {
+            // Avoid sending the same command to avoid infinite loops.
+            return;
+        }
+
         LedCommand ledCommand = new LedCommand(
                 this.selectedLedEffect,
                 (int) this.slider.getValue(),
@@ -164,6 +175,25 @@ public class LedControlPanel extends HBox {
 
         System.out.println("Sending to Arduino: " + ledCommand.toCommandString());
 
-        SerialSender.sendData(this.serial, ledCommand);
+        this.eventManager.sendEvent(ledCommand);
+    }
+
+    /**
+     * {@link LedCommand} received from {@link EventManager}.
+     * We block sending updates back to the Arduino until this component is fully updated to match the received command,
+     * to avoid infinite loops.
+     *
+     * @param ledCommand The {@link LedCommand}
+     */
+    @Override
+    public void onChange(LedCommand ledCommand) {
+        this.blockSending = true;
+
+        this.setEffect(ledCommand.getLedEffect());
+        this.slider.setValue(ledCommand.getSpeed());
+        this.colorSelector1.setSelectedColor(ledCommand.getColor1());
+        this.colorSelector2.setSelectedColor(ledCommand.getColor2());
+
+        this.blockSending = false;
     }
 }

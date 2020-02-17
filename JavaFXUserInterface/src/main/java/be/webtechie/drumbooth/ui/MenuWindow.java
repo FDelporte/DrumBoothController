@@ -1,5 +1,7 @@
 package be.webtechie.drumbooth.ui;
 
+import be.webtechie.drumbooth.event.EventManager;
+import be.webtechie.drumbooth.i2c.definition.Relay;
 import com.pi4j.io.serial.Serial;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -11,18 +13,15 @@ import javafx.scene.layout.VBox;
 
 public class MenuWindow extends HBox {
 
-    private final Serial serial;
-
     private final Pane pane;
-    private final Group home;
-    private final Group led;
+    private final Group relayButtons;
+    private final Group ledStrips;
+    private final Group exitConfirm;
 
     /**
      * Construct the main UI with the menu buttons.
      */
-    public MenuWindow(Serial serial) {
-        this.serial = serial;
-
+    public MenuWindow(EventManager eventManager) {
         this.setSpacing(25);
         this.getStylesheets().add("styles/style.css");
         this.getStyleClass().add("bg");
@@ -32,12 +31,16 @@ public class MenuWindow extends HBox {
         this.pane = new StackPane();
         this.getChildren().add(this.pane);
 
-        this.home = new Group();
+        RelayPanel relayPanel = new RelayPanel();
+        this.relayButtons = new Group(relayPanel);
 
-        LedControlPanel ledControlPanel = new LedControlPanel(serial);
-        this.led = new Group(ledControlPanel);
+        LedControlPanel ledControlPanel = new LedControlPanel(eventManager);
+        this.ledStrips = new Group(ledControlPanel);
 
-        this.show(this.led);
+        ExitPanel exitPanel = new ExitPanel();
+        this.exitConfirm = new Group(exitPanel);
+
+        this.show(this.relayButtons);
     }
 
     /**
@@ -50,20 +53,20 @@ public class MenuWindow extends HBox {
         buttons.setPadding(new Insets(5, 5, 5, 5));
         buttons.setSpacing(5);
 
-        final Button btHome = new Button("Home");
-        btHome.getStyleClass().add("menuButton");
-        btHome.setOnAction(e -> this.show(this.home));
-        buttons.getChildren().add(btHome);
+        final Button btRelay = new Button("Lichten");
+        btRelay.getStyleClass().add("menuButton");
+        btRelay.setOnAction(e -> this.show(this.relayButtons));
+        buttons.getChildren().add(btRelay);
 
-        final Button btColors = new Button("LED");
-        btColors.getStyleClass().add("menuButton");
-        btColors.setOnAction(e -> this.show(this.led));
-        buttons.getChildren().add(btColors);
+        final Button btLedStrips = new Button("Strips");
+        btLedStrips.getStyleClass().add("menuButton");
+        btLedStrips.setOnAction(e -> this.show(this.ledStrips));
+        buttons.getChildren().add(btLedStrips);
 
-        final Button btLog = new Button("Queue");
-        btLog.getStyleClass().add("menuButton");
-        //btLog.setOnAction(e -> this.show(this.log));
-        buttons.getChildren().add(btLog);
+        final Button btExit = new Button("Afsluiten");
+        btExit.getStyleClass().add("menuButton");
+        btExit.setOnAction(e -> this.show(this.exitConfirm));
+        buttons.getChildren().add(btExit);
 
         return buttons;
     }
