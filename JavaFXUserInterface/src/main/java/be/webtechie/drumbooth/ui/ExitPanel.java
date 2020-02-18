@@ -26,7 +26,7 @@ public class ExitPanel extends VBox {
      */
     private void exit() {
         try {
-            Process p = Runtime.getRuntime().exec(new String[]{ "su", "-c", "shutdown" });
+            Process p = Runtime.getRuntime().exec(new String[]{"shutdown", "now"});
             p.waitFor();
         } catch (Exception ex) {
             ex.printStackTrace();

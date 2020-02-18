@@ -1,8 +1,6 @@
 package be.webtechie.drumbooth.ui;
 
 import be.webtechie.drumbooth.event.EventManager;
-import be.webtechie.drumbooth.i2c.definition.Relay;
-import com.pi4j.io.serial.Serial;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -23,7 +21,7 @@ public class MenuWindow extends HBox {
      */
     public MenuWindow(EventManager eventManager) {
         this.setSpacing(25);
-        this.getStylesheets().add("styles/style.css");
+        this.getStylesheets().add("style.css");
         this.getStyleClass().add("bg");
 
         this.getChildren().add(this.getMainMenu());
@@ -63,7 +61,7 @@ public class MenuWindow extends HBox {
         btLedStrips.setOnAction(e -> this.show(this.ledStrips));
         buttons.getChildren().add(btLedStrips);
 
-        final Button btExit = new Button("Afsluiten");
+        final Button btExit = new Button("X");
         btExit.getStyleClass().add("menuButton");
         btExit.setOnAction(e -> this.show(this.exitConfirm));
         buttons.getChildren().add(btExit);

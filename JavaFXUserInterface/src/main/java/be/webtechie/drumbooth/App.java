@@ -20,6 +20,7 @@ import java.util.Arrays;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class App extends Application {
 
@@ -38,7 +39,7 @@ public class App extends Application {
         final Serial serial = SerialFactory.createInstance();
 
         // Initialize the EventManager
-        this.eventManager = new EventManager(serial);
+        eventManager = new EventManager(serial);
 
         // Initialize the serial communication with the Arduino board
         this.startSerialCommunication(serial);
@@ -46,16 +47,18 @@ public class App extends Application {
         // Initialize the web server
         this.startWebServer();
 
-        // Set all relays out
+        // Set all relays out, to make sure they match with the UI
         RelayController.setRelays(
                 Arrays.asList(Board.BOARD_1, Board.BOARD_2),
                 Arrays.asList(Relay.RELAY_1, Relay.RELAY_2, Relay.RELAY_3, Relay.RELAY_4),
                 State.STATE_OFF);
         System.out.println("All relays turned off");
 
-        var scene = new Scene(new MenuWindow(this.eventManager), 640, 480);
+        var scene = new Scene(new MenuWindow(eventManager), 640, 480);
         stage.setScene(scene);
-        stage.setTitle("I²C Relay controller");
+        stage.setTitle("Drumbooth Control Panel");
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setMaximized(true);
         stage.show();
     }
 
@@ -71,7 +74,7 @@ public class App extends Application {
     private void startSerialCommunication(Serial serial) {
         // Can't be used on Windows (e.g. while developing and debugging)
         String os = System.getProperty("os.name").toLowerCase();
-        if (os.indexOf("win") >= 0) {
+        if (os.contains("win")) {
             return;
         }
 
@@ -99,7 +102,7 @@ public class App extends Application {
         try {
             Undertow server = Undertow.builder()
                     .addHttpListener(WEBSERVER_PORT, WEBSERVER_HOST)
-                    .setHandler(new WebHandler(this.eventManager))
+                    .setHandler(new WebHandler(eventManager))
                     .build();
             server.start();
         } catch (Exception ex) {

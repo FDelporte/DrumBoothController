@@ -4,7 +4,10 @@ import be.webtechie.drumbooth.i2c.RelayController;
 import be.webtechie.drumbooth.i2c.definition.Board;
 import be.webtechie.drumbooth.i2c.definition.Relay;
 import be.webtechie.drumbooth.i2c.definition.State;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.ToggleSwitch;
@@ -14,42 +17,30 @@ import org.controlsfx.control.ToggleSwitch;
  */
 public class RelayPanel extends VBox {
 
+    /**
+     * Constructor
+     */
     public RelayPanel() {
         this.setSpacing(25);
         this.setPadding(new Insets(25));
 
-        this.getChildren().add(this.createRow(Board.BOARD_1, 0, true, false, false, false));
-        this.getChildren().add(this.createRow(Board.BOARD_2, 4, false, false, false, false));
+        HBox row1 = new HBox();
+        row1.setSpacing(25);
+        row1.getChildren().add(this.createRelayToggleSwitch("Wit licht", Board.BOARD_1, Relay.RELAY_1, true));
+        row1.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_1, Relay.RELAY_2));
+        row1.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_1, Relay.RELAY_3));
+        row1.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_1, Relay.RELAY_4));
+        this.getChildren().add(row1);
+
+        HBox row2 = new HBox();
+        row2.setSpacing(25);
+        row2.getChildren().add(this.createRelayToggleSwitch("Stroboscoop", Board.BOARD_2, Relay.RELAY_1));
+        row2.getChildren().add(this.createRelayToggleSwitch("Spot op bol", Board.BOARD_2, Relay.RELAY_2));
+        row2.getChildren().add(this.createRelayToggleSwitch("Spiegelbol", Board.BOARD_2, Relay.RELAY_3));
+        row2.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_2, Relay.RELAY_4));
+        this.getChildren().add(row2);
 
         System.out.println("Toggle switch screen created");
-    }
-
-    /**
-     * Create a row with four toggle switches for the given board.
-     *
-     * @param board The board to be controlled
-     * @param offset Offset for the number showed in the label
-     * @return The created HBox
-     */
-    private HBox createRow(Board board, int offset,
-            boolean relay1Inverted, boolean relay2Inverted, boolean relay3Inverted, boolean relay4Inverted) {
-        HBox row = new HBox();
-        row.setSpacing(25);
-
-        row.getChildren().add(this.createRelayToggleSwitch(
-                "Relais " + (offset + 1),
-                board, Relay.RELAY_1, relay1Inverted));
-        row.getChildren().add(this.createRelayToggleSwitch(
-                "Relais " + (offset + 2),
-                board, Relay.RELAY_2, relay2Inverted));
-        row.getChildren().add(this.createRelayToggleSwitch(
-                "Relais " + (offset + 3),
-                board, Relay.RELAY_3, relay3Inverted));
-        row.getChildren().add(this.createRelayToggleSwitch(
-                "Relais " + (offset + 4),
-                board, Relay.RELAY_4, relay4Inverted));
-
-        return row;
     }
 
     /**
@@ -58,22 +49,57 @@ public class RelayPanel extends VBox {
      * @param label Label for the toggle switch
      * @param board The board to be controlled
      * @param relay The relay on the board to be controlled
-     * @param inverted Flag for relay on which the output is connected to the non-actived side
-     * @return The created ToggleSwitch
+     * @return The created VBox with ToggleSwitch
      */
-    private ToggleSwitch createRelayToggleSwitch(String label, Board board, Relay relay, boolean inverted) {
-        ToggleSwitch toggleSwitch = new ToggleSwitch();
-        toggleSwitch.setText(label);
-        toggleSwitch.selectedProperty().addListener((observable, oldValue, selected) ->
-                RelayController.setRelay(board, relay,
-                        selected ?
-                                inverted ? State.STATE_OFF : State.STATE_ON :
-                                inverted ? State.STATE_ON : State.STATE_OFF));
+    private VBox createRelayToggleSwitch(String label, Board board, Relay relay) {
+        return this.createRelayToggleSwitch(label, board, relay, false);
+    }
 
+    /**
+     * Create a ToggleSwitch which will call the RelayController on change.
+     *
+     * @param text Label for the toggle switch
+     * @param board The board to be controlled
+     * @param relay The relay on the board to be controlled
+     * @param inverted Flag for relay on which the output is connected to the non-actived side
+     * @return The created VBox with ToggleSwitch
+     */
+    private VBox createRelayToggleSwitch(String text, Board board, Relay relay, boolean inverted) {
+        VBox toggleHolder = new VBox();
+        toggleHolder.setMinWidth(100);
+        toggleHolder.setAlignment(Pos.CENTER);
+        toggleHolder.setSpacing(10);
+        toggleHolder.setPadding(new Insets(10));
+
+        Label lbl = new Label(text);
+        lbl.setMinWidth(100);
+        lbl.setAlignment(Pos.CENTER);
+        toggleHolder.getChildren().add(lbl);
+
+        ToggleSwitch toggleSwitch = new ToggleSwitch();
+        toggleSwitch.selectedProperty().addListener((observable, oldValue, selected) ->
+                toggleRelay(board, relay, toggleSwitch, inverted));
         if (inverted) {
             toggleSwitch.setSelected(true);
         }
+        toggleHolder.getChildren().add(toggleSwitch);
 
-        return toggleSwitch;
+        //lbl.setOnMouseClicked(e -> this.changeToggleSwitch(toggleSwitch));
+       toggleHolder.setOnMouseClicked(e -> this.changeToggleSwitch(toggleSwitch));
+
+        return toggleHolder;
+    }
+
+    private void changeToggleSwitch(ToggleSwitch toggleSwitch) {
+        System.out.println("Changing toggle switch " + toggleSwitch);
+        toggleSwitch.setSelected(!toggleSwitch.isSelected());
+    }
+
+    private void toggleRelay(Board board, Relay relay, ToggleSwitch toggleSwitch, boolean inverted) {
+        System.out.println("Toggling relay " + board + ":" + relay);
+        RelayController.setRelay(board, relay,
+                toggleSwitch.isSelected() ?
+                        inverted ? State.STATE_OFF : State.STATE_ON :
+                        inverted ? State.STATE_ON : State.STATE_OFF);
     }
 }
