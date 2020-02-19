@@ -4,18 +4,19 @@ import be.webtechie.drumbooth.i2c.RelayController;
 import be.webtechie.drumbooth.i2c.definition.Board;
 import be.webtechie.drumbooth.i2c.definition.Relay;
 import be.webtechie.drumbooth.i2c.definition.State;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apache.log4j.Logger;
 import org.controlsfx.control.ToggleSwitch;
 
 /**
  * Builder for a screen with two rows with four toggle switches.
  */
 public class RelayPanel extends VBox {
+    private static Logger logger = Logger.getLogger(RelayPanel.class);
 
     /**
      * Constructor
@@ -40,7 +41,7 @@ public class RelayPanel extends VBox {
         row2.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_2, Relay.RELAY_4));
         this.getChildren().add(row2);
 
-        System.out.println("Toggle switch screen created");
+        logger.info("Toggle switch screen created");
     }
 
     /**
@@ -84,19 +85,18 @@ public class RelayPanel extends VBox {
         }
         toggleHolder.getChildren().add(toggleSwitch);
 
-        //lbl.setOnMouseClicked(e -> this.changeToggleSwitch(toggleSwitch));
        toggleHolder.setOnMouseClicked(e -> this.changeToggleSwitch(toggleSwitch));
 
         return toggleHolder;
     }
 
     private void changeToggleSwitch(ToggleSwitch toggleSwitch) {
-        System.out.println("Changing toggle switch " + toggleSwitch);
+        logger.info("Changing toggle switch " + toggleSwitch);
         toggleSwitch.setSelected(!toggleSwitch.isSelected());
     }
 
     private void toggleRelay(Board board, Relay relay, ToggleSwitch toggleSwitch, boolean inverted) {
-        System.out.println("Toggling relay " + board + ":" + relay);
+        logger.info("Toggling relay " + board + ":" + relay);
         RelayController.setRelay(board, relay,
                 toggleSwitch.isSelected() ?
                         inverted ? State.STATE_OFF : State.STATE_ON :

@@ -4,10 +4,14 @@ import be.webtechie.drumbooth.led.LedCommand;
 import com.pi4j.io.serial.Serial;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 public class EventManager {
 
+    private static Logger logger = Logger.getLogger(EventManager.class);
+
     private final Serial serial;
+    private LedCommand lastLedCommand = null;
 
     public EventManager(Serial serial) {
         this.serial = serial;
@@ -32,14 +36,21 @@ public class EventManager {
      *
      * @param ledCommand {@link LedCommand}
      */
-    public void sendEvent(LedCommand ledCommand) {
+    public void sendSerialCommand(LedCommand ledCommand) {
+        this.lastLedCommand = ledCommand;
         this.eventListeners.forEach(l -> l.onChange(ledCommand));
 
         try {
-            // Write a text to the Arduino, as demo
             this.serial.writeln(ledCommand.toCommandString());
         } catch (Exception ex) {
-            System.err.println("Error: " + ex.getMessage());
+            logger.error("Error while sending : " + ex.getMessage());
         }
+    }
+
+    /**
+     * @return The last {@link LedCommand} sent to the Arduino.
+     */
+    public LedCommand getLastLedCommand() {
+        return this.lastLedCommand;
     }
 }

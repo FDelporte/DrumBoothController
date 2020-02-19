@@ -13,8 +13,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apache.log4j.Logger;
 
 public class LedControlPanel extends HBox implements EventListener {
+    private static Logger logger = Logger.getLogger(LedControlPanel.class);
 
     private final EventManager eventManager;
 
@@ -173,9 +175,9 @@ public class LedControlPanel extends HBox implements EventListener {
                 this.colorSelector2.getSelectedColor()
         );
 
-        System.out.println("Sending to Arduino: " + ledCommand.toCommandString());
+        logger.info("Sending to Arduino: " + ledCommand.toCommandString());
 
-        this.eventManager.sendEvent(ledCommand);
+        this.eventManager.sendSerialCommand(ledCommand);
     }
 
     /**

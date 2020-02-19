@@ -21,8 +21,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 public class App extends Application {
+    private static Logger logger = Logger.getLogger(App.class);
 
     private static final String SERIAL_DEVICE = "/dev/ttyACM0";
     private static final Baud SERIAL_SPEED = Baud._115200;
@@ -31,9 +36,26 @@ public class App extends Application {
 
     private static EventManager eventManager;
 
+    /**
+     * Entry point of the application.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        Logger.getRootLogger().getLoggerRepository().resetConfiguration();
+        initLog();
+
+        launch();
+    }
+
+    /**
+     * Starting point of the JavaFX application.
+     *
+     * @param stage
+     */
     @Override
     public void start(Stage stage) {
-        System.out.println("Starting application");
+        logger.info("Starting application");
 
         // Create an instance of the serial communications class
         final Serial serial = SerialFactory.createInstance();
@@ -52,7 +74,7 @@ public class App extends Application {
                 Arrays.asList(Board.BOARD_1, Board.BOARD_2),
                 Arrays.asList(Relay.RELAY_1, Relay.RELAY_2, Relay.RELAY_3, Relay.RELAY_4),
                 State.STATE_OFF);
-        System.out.println("All relays turned off");
+        logger.info("All relays turned off");
 
         var scene = new Scene(new MenuWindow(eventManager), 640, 480);
         stage.setScene(scene);
@@ -60,10 +82,6 @@ public class App extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setMaximized(true);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 
     /**
@@ -89,12 +107,12 @@ public class App extends Application {
                     .flowControl(FlowControl.NONE);
 
             // Display connection details
-            System.out.println("Connection: " + config.toString());
+            logger.info("Connection: " + config.toString());
 
             // Open the serial port with the configuration
             serial.open(config);
         } catch (Exception ex) {
-            System.err.println("Could not start serial communication, error: " + ex.getMessage());
+            logger.error("Could not start serial communication, error: " + ex.getMessage());
         }
     }
 
@@ -106,7 +124,16 @@ public class App extends Application {
                     .build();
             server.start();
         } catch (Exception ex) {
-            System.err.println("Could not start web server, error: " + ex.getMessage());
+            logger.error("Could not start web server, error: " + ex.getMessage());
         }
+    }
+
+    private static void initLog() {
+        ConsoleAppender console = new ConsoleAppender();
+        console.setName("ConsoleLogger");
+        console.setLayout(new PatternLayout("%d %-5p [%c{1}] %m%n"));
+        console.setThreshold(Level.DEBUG);
+        console.activateOptions();
+        Logger.getRootLogger().addAppender(console);
     }
 }

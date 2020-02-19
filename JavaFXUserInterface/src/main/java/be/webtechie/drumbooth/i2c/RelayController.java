@@ -3,16 +3,16 @@ package be.webtechie.drumbooth.i2c;
 import be.webtechie.drumbooth.i2c.definition.Board;
 import be.webtechie.drumbooth.i2c.definition.Relay;
 import be.webtechie.drumbooth.i2c.definition.State;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * Controller to set the relay states on different boards.
  */
 public class RelayController {
+
+    private static Logger logger = Logger.getLogger(RelayController.class);
 
     /**
      * Set the state of the all the relays on the given boards.
@@ -38,14 +38,24 @@ public class RelayController {
      */
     public static void setRelay(Board board, Relay relay, State state) {
         String cmd = "i2cset -y 1"
-                + " " + String.format("0x%02X", board.getAddress())
-                + " " + String.format("0x%02X", relay.getChannel())
-                + " " + String.format("0x%02X", state.getValue());
+                + " " + toHexString(board.getAddress())
+                + " " + toHexString(relay.getChannel())
+                + " " + toHexString(state.getValue());
 
         execute(cmd);
 
-        System.out.println(relay + " on " + board + " set to " + state
+        logger.info(relay + " on " + board + " set to " + state
                 + " with command: " + cmd);
+    }
+
+    /**
+     * Convert the value to HEX byte string.
+     *
+     * @param value Numeric value
+     * @return String value in HEX format
+     */
+    private static String toHexString(int value) {
+        return String.format("0x%02X", value);
     }
 
     /**
@@ -59,25 +69,10 @@ public class RelayController {
             // You can compare this to opening a terminal window and running a command.
             Process p = Runtime.getRuntime().exec(cmd);
 
-            // Get the error stream of the process and print it
-            // so we will now if something goes wrong.
-            InputStream error = p.getErrorStream();
-            for (int i = 0; i < error.available(); i++) {
-                System.err.println("" + error.read());
-            }
-
-            // Get the output stream of the process and print it
-            String line;
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while ((line = input.readLine()) != null) {
-                System.out.println(line);
-            }
-            input.close();
-
             // We don't need the process anymore.
             p.destroy();
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException ex) {
+            logger.error("Error while sending relay I²C command: " + ex.getMessage());
         }
     }
 
@@ -91,24 +86,24 @@ public class RelayController {
         try {
             this.i2c = I2CFactory.getInstance(I2CBus.BUS_1);
         } catch (UnsupportedBusNumberException ex) {
-            System.err.println("Bus number not supported: "
+            logger.error("Bus number not supported: "
                     + ex.getMessage());
             this.i2c = null;
         } catch (IOException ex) {
-            System.err.println("Error while initializing the relay controller: "
+            logger.error("Error while initializing the relay controller: "
                     + ex.getMessage());
             this.i2c = null;
         }
     }
 
     public void setRelay(Board board, Relay relay, State state) {
-        System.out.println("Setting relay on board "
+        logger.info("Setting relay on board "
                 + String.format("0x%02X", board.getAddress())
                 + ", relay " + String.format("0x%02X", relay.getChannel())
                 + ", state " + String.format("0x%02X", state.getValue()));
 
         if (this.i2c == null) {
-            System.err.println("I²C not available");
+            logger.error("I²C not available");
             return;
         }
 
@@ -116,7 +111,7 @@ public class RelayController {
             I2CDevice device = i2c.getDevice(board.getAddress());
             device.write(relay.getChannel(), state.getValue());
         } catch (IOException ex) {
-            System.err.println("Error while setting relay: " + ex.getMessage());
+            logger.error("Error while setting relay: " + ex.getMessage());
         }
     }
     */

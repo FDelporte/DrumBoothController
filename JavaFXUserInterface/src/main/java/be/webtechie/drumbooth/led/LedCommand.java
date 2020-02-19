@@ -27,26 +27,6 @@ public class LedCommand {
     }
 
     /**
-     * Initialize a {@link LedCommand} from a ":"-separated String as exchanged with the Arduino.
-     *
-     * @param command {@link String}
-     */
-    public LedCommand(String command) {
-        String[] parts = command.split(":");
-
-        this.ledEffect = parts.length >= 1 ? LedEffect.fromId(parts[0]) : LedEffect.UNDEFINED;
-        this.speed = parts.length >= 2 ? Integer.parseInt(parts[1]) : 0;
-        this.color1 = parts.length >= 5 ?
-                Color.rgb(
-                        Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4])
-                ): Color.BLACK;
-        this.color2 = (parts.length >= 8) ?
-                Color.rgb(
-                        Integer.parseInt(parts[5]), Integer.parseInt(parts[6]), Integer.parseInt(parts[7])
-                ) : Color.BLACK;
-    }
-
-    /**
      * Convert to a ":"-separated String to be exchanged with the Arduino.
      *
      * @return The command as ":"-separated String

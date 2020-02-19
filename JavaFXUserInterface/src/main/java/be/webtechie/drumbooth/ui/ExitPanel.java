@@ -4,11 +4,13 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import org.apache.log4j.Logger;
 
 /**
  * Builder for the exit screen.
  */
 public class ExitPanel extends VBox {
+    private static Logger logger = Logger.getLogger(ExitPanel.class);
 
     public ExitPanel() {
         this.setSpacing(25);
@@ -29,7 +31,7 @@ public class ExitPanel extends VBox {
             Process p = Runtime.getRuntime().exec(new String[]{"shutdown", "now"});
             p.waitFor();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("Exit error: " + ex.getMessage());
         }
 
         Platform.exit();

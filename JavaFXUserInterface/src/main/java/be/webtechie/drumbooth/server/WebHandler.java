@@ -3,7 +3,6 @@ package be.webtechie.drumbooth.server;
 import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
-import com.pi4j.io.serial.Serial;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -37,13 +36,13 @@ public class WebHandler implements HttpHandler {
         String path = exchange.getRequestPath();
 
         if (path.equals("/red-alert")) {
-            this.eventManager.sendEvent(new LedCommand(LedEffect.BLINKING, 10, Color.RED, Color.WHITE));
+            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 10, Color.RED, Color.WHITE));
             this.returnSuccess(exchange, "RED ALERT message has been sent");
         } else if (path.equals("/all-white")) {
-            this.eventManager.sendEvent(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
+            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
             this.returnSuccess(exchange, "ALL WHITE message has been sent");
         } else if (path.equals("/all-out")) {
-            this.eventManager.sendEvent(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
+            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
             this.returnSuccess(exchange, "ALL OUT message has been sent");
         } else {
             this.returnError(exchange, StatusCodes.NOT_FOUND, "The requested path is not available");
@@ -80,8 +79,24 @@ public class WebHandler implements HttpHandler {
      * @param content Content of the page
      */
     private void returnPage(HttpServerExchange exchange, int statusCode, String title, String content) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder lastLedCommandOutput = new StringBuilder();
+        LedCommand lastLedCommand = this.eventManager.getLastLedCommand();
+        if (lastLedCommand != null) {
+            lastLedCommandOutput.append("Last effect: ").append(lastLedCommand.getLedEffect().name()).append("<br/>");
 
+            if (lastLedCommand.getLedEffect().useColor1()) {
+                lastLedCommandOutput.append("Color 1: ").append(lastLedCommand.getColor1().toString()).append("<br/>");
+            }
+            if (lastLedCommand.getLedEffect().useColor2()) {
+                lastLedCommandOutput.append("Color 2: ").append(lastLedCommand.getColor2().toString()).append("<br/>");
+
+            }
+            if (lastLedCommand.getLedEffect().useSpeed()) {
+                lastLedCommandOutput.append("Speed: ").append(lastLedCommand.getSpeed()).append("<br/>");
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html>\n")
                 .append("<html>\n")
                 .append("   <head>\n")
@@ -108,6 +123,8 @@ public class WebHandler implements HttpHandler {
                 .append("           <li><a href='/all-out'>ALL OUT</a></li>\n")
                 .append("       </ul>\n")
                 .append("       ").append(content).append("\n")
+                .append("       <br/><br/>")
+                .append(lastLedCommandOutput.toString())
                 .append("   </body>\n ")
                 .append("</html>");
         exchange.getResponseHeaders().put(Headers.CONTENT_LENGTH, sb.toString().length());
