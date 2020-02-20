@@ -2,6 +2,7 @@ package be.webtechie.drumbooth.ui;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import org.apache.log4j.Logger;
@@ -15,6 +16,7 @@ public class ExitPanel extends VBox {
     public ExitPanel() {
         this.setSpacing(25);
         this.setPadding(new Insets(25));
+        this.setAlignment(Pos.CENTER);
 
         Button btExit = new Button("Afsluiten");
         btExit.getStyleClass().add("exitButton");

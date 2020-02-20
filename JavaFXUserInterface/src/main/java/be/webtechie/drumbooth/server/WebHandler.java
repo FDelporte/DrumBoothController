@@ -36,7 +36,7 @@ public class WebHandler implements HttpHandler {
         String path = exchange.getRequestPath();
 
         if (path.equals("/red-alert")) {
-            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 10, Color.RED, Color.WHITE));
+            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 50, Color.RED, Color.WHITE));
             this.returnSuccess(exchange, "RED ALERT message has been sent");
         } else if (path.equals("/all-white")) {
             this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));

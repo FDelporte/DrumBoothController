@@ -27,7 +27,7 @@ public class RelayPanel extends VBox {
 
         HBox row1 = new HBox();
         row1.setSpacing(25);
-        row1.getChildren().add(this.createRelayToggleSwitch("Wit licht", Board.BOARD_1, Relay.RELAY_1, true));
+        row1.getChildren().add(this.createRelayToggleSwitch("TL WIT", Board.BOARD_1, Relay.RELAY_1, true));
         row1.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_1, Relay.RELAY_2));
         row1.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_1, Relay.RELAY_3));
         row1.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_1, Relay.RELAY_4));
@@ -35,9 +35,9 @@ public class RelayPanel extends VBox {
 
         HBox row2 = new HBox();
         row2.setSpacing(25);
-        row2.getChildren().add(this.createRelayToggleSwitch("Stroboscoop", Board.BOARD_2, Relay.RELAY_1));
-        row2.getChildren().add(this.createRelayToggleSwitch("Spot op bol", Board.BOARD_2, Relay.RELAY_2));
-        row2.getChildren().add(this.createRelayToggleSwitch("Spiegelbol", Board.BOARD_2, Relay.RELAY_3));
+        row2.getChildren().add(this.createRelayToggleSwitch("STROBO", Board.BOARD_2, Relay.RELAY_1));
+        row2.getChildren().add(this.createRelayToggleSwitch("BOLSPOT", Board.BOARD_2, Relay.RELAY_2));
+        row2.getChildren().add(this.createRelayToggleSwitch("BOLMOTOR", Board.BOARD_2, Relay.RELAY_3));
         row2.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_2, Relay.RELAY_4));
         this.getChildren().add(row2);
 
@@ -71,10 +71,12 @@ public class RelayPanel extends VBox {
         toggleHolder.setAlignment(Pos.CENTER);
         toggleHolder.setSpacing(10);
         toggleHolder.setPadding(new Insets(10));
+        toggleHolder.getStyleClass().add("toggleHolder");
 
         Label lbl = new Label(text);
         lbl.setMinWidth(100);
         lbl.setAlignment(Pos.CENTER);
+        lbl.getStyleClass().add("labelName");
         toggleHolder.getChildren().add(lbl);
 
         ToggleSwitch toggleSwitch = new ToggleSwitch();

@@ -76,7 +76,7 @@ public class App extends Application {
                 State.STATE_OFF);
         logger.info("All relays turned off");
 
-        var scene = new Scene(new MenuWindow(eventManager), 640, 480);
+        var scene = new Scene(new MenuWindow(eventManager), 1024, 600);
         stage.setScene(scene);
         stage.setTitle("Drumbooth Control Panel");
         stage.initStyle(StageStyle.UNDECORATED);
