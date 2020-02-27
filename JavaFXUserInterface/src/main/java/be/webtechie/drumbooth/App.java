@@ -25,6 +25,7 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.apache.log4j.RollingFileAppender;
 
 public class App extends Application {
     private static Logger logger = Logger.getLogger(App.class);
@@ -80,7 +81,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle("Drumbooth Control Panel");
         stage.initStyle(StageStyle.UNDECORATED);
-        stage.setMaximized(true);
+        //stage.setMaximized(true);
         stage.show();
     }
 
@@ -129,11 +130,24 @@ public class App extends Application {
     }
 
     private static void initLog() {
+        PatternLayout logPattern = new PatternLayout("%d{yyyyMMdd HH:mm:ss,SSS} | %-5p | [%c{1}] | %m%n");
+
         ConsoleAppender console = new ConsoleAppender();
         console.setName("ConsoleLogger");
-        console.setLayout(new PatternLayout("%d %-5p [%c{1}] %m%n"));
+        console.setLayout(logPattern);
         console.setThreshold(Level.DEBUG);
         console.activateOptions();
         Logger.getRootLogger().addAppender(console);
+
+        RollingFileAppender file = new RollingFileAppender();
+        file.setName("FileLogger");
+        file.setFile("/tmp/logs/app.log");
+        file.setLayout(logPattern);
+        file.setThreshold(Level.INFO);
+        file.setAppend(true);
+        file.activateOptions();
+        file.setMaxFileSize("10MB");
+        file.setMaxBackupIndex(5);
+        Logger.getRootLogger().addAppender(file);
     }
 }

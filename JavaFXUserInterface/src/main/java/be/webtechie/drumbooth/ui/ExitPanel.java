@@ -16,7 +16,7 @@ public class ExitPanel extends VBox {
     public ExitPanel() {
         this.setSpacing(25);
         this.setPadding(new Insets(25));
-        this.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.TOP_LEFT);
 
         Button btExit = new Button("Afsluiten");
         btExit.getStyleClass().add("exitButton");

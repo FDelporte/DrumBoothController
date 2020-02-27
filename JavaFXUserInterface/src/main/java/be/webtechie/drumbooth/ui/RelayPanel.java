@@ -37,7 +37,7 @@ public class RelayPanel extends VBox {
         row2.setSpacing(25);
         row2.getChildren().add(this.createRelayToggleSwitch("STROBO", Board.BOARD_2, Relay.RELAY_1));
         row2.getChildren().add(this.createRelayToggleSwitch("BOLSPOT", Board.BOARD_2, Relay.RELAY_2));
-        row2.getChildren().add(this.createRelayToggleSwitch("BOLMOTOR", Board.BOARD_2, Relay.RELAY_3));
+        row2.getChildren().add(this.createRelayToggleSwitch("BOLMTR", Board.BOARD_2, Relay.RELAY_3));
         row2.getChildren().add(this.createRelayToggleSwitch("-", Board.BOARD_2, Relay.RELAY_4));
         this.getChildren().add(row2);
 

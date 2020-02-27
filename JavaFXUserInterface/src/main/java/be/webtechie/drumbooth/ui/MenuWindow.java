@@ -61,7 +61,7 @@ public class MenuWindow extends HBox {
         btLedStrips.setOnAction(e -> this.show(this.ledStrips));
         buttons.getChildren().add(btLedStrips);
 
-        final Button btExit = new Button("X");
+        final Button btExit = new Button("Sluit");
         btExit.getStyleClass().add("menuButton");
         btExit.setOnAction(e -> this.show(this.exitConfirm));
         buttons.getChildren().add(btExit);
