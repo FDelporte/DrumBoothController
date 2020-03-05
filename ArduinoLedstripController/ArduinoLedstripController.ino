@@ -14,7 +14,7 @@
 #define PIN1 6
 #define PIN2 7
 #define PIN3 8
-#define NUMBER_OF_LEDS 11
+#define NUMBER_OF_LEDS 45
 
 // Variables used by the code to handle the incoming LED commands
 char input[50];
