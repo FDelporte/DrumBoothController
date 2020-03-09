@@ -44,7 +44,7 @@ public class LedControlPanel extends HBox implements EventListener {
     /**
      * Construct the UI.
      */
-    LedControlPanel(EventManager eventManager) {
+    public LedControlPanel(EventManager eventManager) {
         this.eventManager = eventManager;
         this.eventManager.addListener(this);
 

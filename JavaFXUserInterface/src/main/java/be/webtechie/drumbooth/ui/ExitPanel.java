@@ -1,5 +1,8 @@
 package be.webtechie.drumbooth.ui;
 
+import be.webtechie.drumbooth.event.EventManager;
+import be.webtechie.drumbooth.i2c.RelayController;
+import be.webtechie.drumbooth.led.LedCommand;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,7 +16,11 @@ import org.apache.log4j.Logger;
 public class ExitPanel extends VBox {
     private static Logger logger = Logger.getLogger(ExitPanel.class);
 
-    public ExitPanel() {
+    private final EventManager eventManager;
+
+    public ExitPanel(EventManager eventManager) {
+        this.eventManager = eventManager;
+
         this.setSpacing(25);
         this.setPadding(new Insets(25));
         this.setAlignment(Pos.TOP_LEFT);
@@ -30,6 +37,9 @@ public class ExitPanel extends VBox {
      */
     private void exit() {
         try {
+            RelayController.setAllOff();
+            this.eventManager.sendSerialCommand(LedCommand.getInitialState());
+
             Process p = Runtime.getRuntime().exec(new String[]{"shutdown", "now"});
             p.waitFor();
         } catch (Exception ex) {

@@ -27,6 +27,15 @@ public class LedCommand {
     }
 
     /**
+     * Start-up and exit state for LED strips.
+     *
+     * @return Static LedEffect with dimmed color.
+     */
+    public static LedCommand getInitialState() {
+        return new LedCommand(LedEffect.STATIC, 0, Color.color(10, 10, 10), null);
+    }
+
+    /**
      * Convert to a ":"-separated String to be exchanged with the Arduino.
      *
      * @return The command as ":"-separated String

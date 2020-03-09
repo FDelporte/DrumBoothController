@@ -2,9 +2,7 @@ package be.webtechie.drumbooth;
 
 import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.i2c.RelayController;
-import be.webtechie.drumbooth.i2c.definition.Board;
-import be.webtechie.drumbooth.i2c.definition.Relay;
-import be.webtechie.drumbooth.i2c.definition.State;
+import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.server.WebHandler;
 import be.webtechie.drumbooth.ui.MenuWindow;
 import com.pi4j.io.serial.Baud;
@@ -16,7 +14,6 @@ import com.pi4j.io.serial.SerialConfig;
 import com.pi4j.io.serial.SerialFactory;
 import com.pi4j.io.serial.StopBits;
 import io.undertow.Undertow;
-import java.util.Arrays;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -40,7 +37,7 @@ public class App extends Application {
     /**
      * Entry point of the application.
      *
-     * @param args
+     * @param args Command line arguments
      */
     public static void main(String[] args) {
         Logger.getRootLogger().getLoggerRepository().resetConfiguration();
@@ -52,7 +49,7 @@ public class App extends Application {
     /**
      * Starting point of the JavaFX application.
      *
-     * @param stage
+     * @param stage Tha JavaFX stage
      */
     @Override
     public void start(Stage stage) {
@@ -71,17 +68,16 @@ public class App extends Application {
         this.startWebServer();
 
         // Set all relays out, to make sure they match with the UI
-        RelayController.setRelays(
-                Arrays.asList(Board.BOARD_1, Board.BOARD_2),
-                Arrays.asList(Relay.RELAY_1, Relay.RELAY_2, Relay.RELAY_3, Relay.RELAY_4),
-                State.STATE_OFF);
-        logger.info("All relays turned off");
+        RelayController.setAllOff();
+        logger.info("All relays in initial state");
+
+        // Set LED strips in start-up state
+        eventManager.sendSerialCommand(LedCommand.getInitialState());
 
         var scene = new Scene(new MenuWindow(eventManager), 1024, 600);
         stage.setScene(scene);
         stage.setTitle("Drumbooth Control Panel");
         stage.initStyle(StageStyle.UNDECORATED);
-        //stage.setMaximized(true);
         stage.show();
     }
 

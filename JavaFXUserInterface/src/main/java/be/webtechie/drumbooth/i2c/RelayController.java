@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -16,6 +17,24 @@ import org.apache.log4j.Logger;
 public class RelayController {
 
     private static Logger logger = Logger.getLogger(RelayController.class);
+
+    /**
+     * Hide constructor as all methods are static
+     */
+    private RelayController() {
+        // NOP
+    }
+
+    /**
+     * Set all relays off
+     */
+    public static void setAllOff() {
+        setRelays(
+                Arrays.asList(Board.BOARD_1, Board.BOARD_2),
+                Arrays.asList(Relay.RELAY_1, Relay.RELAY_2, Relay.RELAY_3, Relay.RELAY_4),
+                State.STATE_OFF
+        );
+    }
 
     /**
      * Set the state of the all the relays on the given boards.

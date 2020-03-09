@@ -35,7 +35,7 @@ public class MenuWindow extends HBox {
         LedControlPanel ledControlPanel = new LedControlPanel(eventManager);
         this.ledStrips = new Group(ledControlPanel);
 
-        ExitPanel exitPanel = new ExitPanel();
+        ExitPanel exitPanel = new ExitPanel(eventManager);
         this.exitConfirm = new Group(exitPanel);
 
         this.show(this.relayButtons);
