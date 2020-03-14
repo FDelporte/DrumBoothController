@@ -1,7 +1,6 @@
 package be.webtechie.drumbooth.ui;
 
 import be.webtechie.drumbooth.event.EventManager;
-import be.webtechie.drumbooth.i2c.RelayController;
 import be.webtechie.drumbooth.led.LedCommand;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -37,8 +36,11 @@ public class ExitPanel extends VBox {
      */
     private void exit() {
         try {
-            RelayController.setAllOff();
+            this.eventManager.setAllOff();
             this.eventManager.sendSerialCommand(LedCommand.getInitialState());
+
+            // Wait till serial command is handled
+            Thread.sleep(2500);
 
             Process p = Runtime.getRuntime().exec(new String[]{"shutdown", "now"});
             p.waitFor();

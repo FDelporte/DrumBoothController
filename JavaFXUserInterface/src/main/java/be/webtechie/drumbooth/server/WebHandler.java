@@ -1,6 +1,10 @@
 package be.webtechie.drumbooth.server;
 
 import be.webtechie.drumbooth.event.EventManager;
+import be.webtechie.drumbooth.relay.RelayCommand;
+import be.webtechie.drumbooth.relay.definition.Board;
+import be.webtechie.drumbooth.relay.definition.Relay;
+import be.webtechie.drumbooth.relay.definition.State;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
 import io.undertow.io.Sender;
@@ -36,12 +40,25 @@ public class WebHandler implements HttpHandler {
         String path = exchange.getRequestPath();
 
         if (path.equals("/red-alert")) {
+            // All relays off
+            this.eventManager.setAllOff();
+            // Relay ON as state of TL is inverted
+            this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
+            // Blinking red on LED strips
             this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 50, Color.RED, Color.WHITE));
             this.returnSuccess(exchange, "RED ALERT message has been sent");
         } else if (path.equals("/all-white")) {
+            // All relays off = TL on
+            this.eventManager.setAllOff();
+            // LED strips full white
             this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
             this.returnSuccess(exchange, "ALL WHITE message has been sent");
         } else if (path.equals("/all-out")) {
+            // All relays off
+            this.eventManager.setAllOff();
+            // Relay ON as state of TL is inverted
+            this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
+            // LED Strips off
             this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
             this.returnSuccess(exchange, "ALL OUT message has been sent");
         } else {
@@ -85,10 +102,20 @@ public class WebHandler implements HttpHandler {
             lastLedCommandOutput.append("Last effect: ").append(lastLedCommand.getLedEffect().name()).append("<br/>");
 
             if (lastLedCommand.getLedEffect().useColor1()) {
-                lastLedCommandOutput.append("Color 1: ").append(lastLedCommand.getColor1().toString()).append("<br/>");
+                lastLedCommandOutput
+                        .append("<span style='color: ")
+                        .append(lastLedCommand.getColor1AsHexString())
+                        .append(";'>Color 1: ")
+                        .append(lastLedCommand.getColor1AsHexString())
+                        .append("</span><br/>");
             }
             if (lastLedCommand.getLedEffect().useColor2()) {
-                lastLedCommandOutput.append("Color 2: ").append(lastLedCommand.getColor2().toString()).append("<br/>");
+                lastLedCommandOutput
+                        .append("<span style='color: ")
+                        .append(lastLedCommand.getColor2AsHexString())
+                        .append(";'>Color 1: ")
+                        .append(lastLedCommand.getColor2AsHexString())
+                        .append("</span><br/>");
 
             }
             if (lastLedCommand.getLedEffect().useSpeed()) {

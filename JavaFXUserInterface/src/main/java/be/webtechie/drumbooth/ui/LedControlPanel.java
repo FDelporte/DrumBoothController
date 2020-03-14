@@ -4,6 +4,7 @@ import be.webtechie.drumbooth.event.EventListener;
 import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
+import be.webtechie.drumbooth.relay.RelayCommand;
 import eu.hansolo.fx.colorselector.ColorSelector;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
@@ -71,7 +72,7 @@ public class LedControlPanel extends HBox implements EventListener {
         effectButtons.setVgap(10);
         this.getChildren().add(effectButtons);
 
-        this.btStatic = new ToggleButton("Fixed");
+        this.btStatic = new ToggleButton("Vast");
         this.btStatic.getStyleClass().add("ledButton");
         this.btStatic.setOnAction(e -> this.setEffect(LedEffect.STATIC));
         effectButtons.add(this.btStatic, 0, 0);
@@ -81,32 +82,32 @@ public class LedControlPanel extends HBox implements EventListener {
         this.btStaticFade.setOnAction(e -> this.setEffect(LedEffect.STATIC_FADE));
         effectButtons.add(this.btStaticFade, 1, 0);
 
-        this.btBlinking = new ToggleButton("Blink");
+        this.btBlinking = new ToggleButton("Knipperen");
         this.btBlinking.getStyleClass().add("ledButton");
         this.btBlinking.setOnAction(e -> this.setEffect(LedEffect.BLINKING));
         effectButtons.add(this.btBlinking, 0, 1);
 
-        this.btRunning = new ToggleButton("Run");
+        this.btRunning = new ToggleButton("Looplicht");
         this.btRunning.getStyleClass().add("ledButton");
         this.btRunning.setOnAction(e -> this.setEffect(LedEffect.RUNNING));
         effectButtons.add(this.btRunning, 1, 1);
 
-        this.btStaticRainbow = new ToggleButton("Fixed rainbow");
+        this.btStaticRainbow = new ToggleButton("Vaste regenboog");
         this.btStaticRainbow.getStyleClass().add("ledButton");
         this.btStaticRainbow.setOnAction(e -> this.setEffect(LedEffect.STATIC_RAINBOW));
         effectButtons.add(this.btStaticRainbow, 0, 2);
 
-        this.btFadingRainbow = new ToggleButton("Fading rainbow");
+        this.btFadingRainbow = new ToggleButton("Fadende regenboog");
         this.btFadingRainbow.getStyleClass().add("ledButton");
         this.btFadingRainbow.setOnAction(e -> this.setEffect(LedEffect.FADING_RAINBOW));
         effectButtons.add(this.btFadingRainbow, 1, 2);
 
-        this.btWhite = new ToggleButton("White");
+        this.btWhite = new ToggleButton("Wit");
         this.btWhite.getStyleClass().add("ledButton");
         this.btWhite.setOnAction(e -> this.setEffect(LedEffect.ALL_WHITE));
         effectButtons.add(this.btWhite, 0, 3);
 
-        this.btClear = new ToggleButton("Clear");
+        this.btClear = new ToggleButton("Uit");
         this.btClear.getStyleClass().add("ledButton");
         this.btClear.setOnAction(e -> this.setEffect(LedEffect.ALL_OUT));
         effectButtons.add(this.btClear, 1, 3);
@@ -141,6 +142,7 @@ public class LedControlPanel extends HBox implements EventListener {
         this.slider.setDisable(!ledEffect.useSpeed());
         this.slider.setMin(ledEffect.getMinimumSpeed());
         this.slider.setMax(ledEffect.getMaximumSpeed());
+        this.slider.setValue(ledEffect.getInitialSpeed());
 
         this.btStatic.setSelected(ledEffect == LedEffect.STATIC);
         this.btStaticFade.setSelected(ledEffect == LedEffect.STATIC_FADE);
@@ -188,7 +190,7 @@ public class LedControlPanel extends HBox implements EventListener {
      * @param ledCommand The {@link LedCommand}
      */
     @Override
-    public void onChange(LedCommand ledCommand) {
+    public void onLedStripChange(LedCommand ledCommand) {
         this.blockSending = true;
 
         this.setEffect(ledCommand.getLedEffect());
@@ -197,5 +199,16 @@ public class LedControlPanel extends HBox implements EventListener {
         this.colorSelector2.setSelectedColor(ledCommand.getColor2());
 
         this.blockSending = false;
+    }
+
+    /**
+     * {@link RelayCommand} received from {@link EventManager}.
+     * Not to be handled here.
+     *
+     * @param relayCommand The {@link RelayCommand}
+     */
+    @Override
+    public void onRelayChange(RelayCommand relayCommand) {
+        // NOP
     }
 }

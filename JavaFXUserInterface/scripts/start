@@ -1,0 +1,2 @@
+#! /usr/bin/bash
+java -jar /home/pi/DrumBoothController/JavaFXUserInterface/target/drumbooth-0.0.1-jar-with-dependencies.jar

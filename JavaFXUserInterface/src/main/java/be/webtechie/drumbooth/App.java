@@ -1,7 +1,6 @@
 package be.webtechie.drumbooth;
 
 import be.webtechie.drumbooth.event.EventManager;
-import be.webtechie.drumbooth.i2c.RelayController;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.server.WebHandler;
 import be.webtechie.drumbooth.ui.MenuWindow;
@@ -15,6 +14,7 @@ import com.pi4j.io.serial.SerialFactory;
 import com.pi4j.io.serial.StopBits;
 import io.undertow.Undertow;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -42,7 +42,6 @@ public class App extends Application {
     public static void main(String[] args) {
         Logger.getRootLogger().getLoggerRepository().resetConfiguration();
         initLog();
-
         launch();
     }
 
@@ -68,7 +67,7 @@ public class App extends Application {
         this.startWebServer();
 
         // Set all relays out, to make sure they match with the UI
-        RelayController.setAllOff();
+        eventManager.setAllOff();
         logger.info("All relays in initial state");
 
         // Set LED strips in start-up state
@@ -79,6 +78,12 @@ public class App extends Application {
         stage.setTitle("Drumbooth Control Panel");
         stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
+
+        // Make sure the application quits completely on close
+        stage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
 
     /**

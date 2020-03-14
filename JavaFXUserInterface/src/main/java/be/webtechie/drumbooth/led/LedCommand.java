@@ -32,7 +32,7 @@ public class LedCommand {
      * @return Static LedEffect with dimmed color.
      */
     public static LedCommand getInitialState() {
-        return new LedCommand(LedEffect.STATIC, 0, Color.color(10, 10, 10), null);
+        return new LedCommand(LedEffect.STATIC, 0, Color.color(0.1,0.1,0.1), null);
     }
 
     /**
@@ -65,5 +65,13 @@ public class LedCommand {
 
     public Color getColor2() {
         return color2;
+    }
+
+    public String getColor1AsHexString() {
+        return "#" + color1.toString().substring(2, 8);
+    }
+
+    public String getColor2AsHexString() {
+        return "#" + color2.toString().substring(2, 8);
     }
 }

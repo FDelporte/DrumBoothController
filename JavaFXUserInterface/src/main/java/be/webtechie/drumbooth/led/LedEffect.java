@@ -5,26 +5,29 @@ package be.webtechie.drumbooth.led;
  * By using enums with variables, we can define here which UI-elements must be enabled when an effect is selected.
  */
 public enum LedEffect {
-    UNDEFINED("0", false, 0, 0, false, false),
-    STATIC("1", false, 0, 0, true, false),
-    STATIC_FADE("2", false, 0, 0, true, true),
-    BLINKING("3", true, 5, 200, true, true),
-    RUNNING("4", true, 5, 100, true, true),
-    FADING_RAINBOW("5", true, 1, 25, false, false),
-    STATIC_RAINBOW("6", false, 0, 0, false, false),
-    ALL_WHITE("98", false, 0, 0, false, false),
-    ALL_OUT("99", false, 0, 0, false, false);
+    UNDEFINED("0", false, 0, 0, 0, false, false),
+    STATIC("1", false, 0, 0, 0, true, false),
+    STATIC_FADE("2", false, 0,0, 0, true, true),
+    BLINKING("3", true, 50, 5, 200, true, true),
+    RUNNING("4", true, 50, 5, 100, true, true),
+    FADING_RAINBOW("5", true, 10, 1, 25, false, false),
+    STATIC_RAINBOW("6", false, 5, 0, 0, false, false),
+    ALL_WHITE("98", false, 0, 0, 0, false, false),
+    ALL_OUT("99", false, 0, 0, 0, false, false);
 
     private String id;
     private boolean useSpeed;
+    private int initialSpeed;
     private int minimumSpeed;
     private int maximumSpeed;
     private boolean useColor1;
     private boolean useColor2;
 
-    LedEffect(String id, boolean useSpeed, int minimumSpeed, int maximumSpeed, boolean useColor1, boolean useColor2) {
+    LedEffect(String id, boolean useSpeed, int initialSpeed, int minimumSpeed, int maximumSpeed,
+            boolean useColor1, boolean useColor2) {
         this.id = id;
         this.useSpeed = useSpeed;
+        this.initialSpeed = initialSpeed;
         this.minimumSpeed = minimumSpeed;
         this.maximumSpeed = maximumSpeed;
         this.useColor1 = useColor1;
@@ -37,6 +40,10 @@ public enum LedEffect {
 
     public boolean useSpeed() {
         return useSpeed;
+    }
+
+    public int getInitialSpeed() {
+        return initialSpeed;
     }
 
     public int getMinimumSpeed() {

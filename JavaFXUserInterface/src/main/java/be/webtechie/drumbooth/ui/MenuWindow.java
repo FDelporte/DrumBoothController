@@ -29,7 +29,7 @@ public class MenuWindow extends HBox {
         this.pane = new StackPane();
         this.getChildren().add(this.pane);
 
-        RelayPanel relayPanel = new RelayPanel();
+        RelayPanel relayPanel = new RelayPanel(eventManager);
         this.relayButtons = new Group(relayPanel);
 
         LedControlPanel ledControlPanel = new LedControlPanel(eventManager);
