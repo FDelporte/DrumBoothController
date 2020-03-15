@@ -18,14 +18,11 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class App extends Application {
-    private static Logger logger = Logger.getLogger(App.class);
+    private static Logger logger = LogManager.getLogger(App.class);
 
     private static final String SERIAL_DEVICE = "/dev/ttyACM0";
     private static final Baud SERIAL_SPEED = Baud._115200;
@@ -40,8 +37,6 @@ public class App extends Application {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        Logger.getRootLogger().getLoggerRepository().resetConfiguration();
-        initLog();
         launch();
     }
 
@@ -128,27 +123,5 @@ public class App extends Application {
         } catch (Exception ex) {
             logger.error("Could not start web server, error: " + ex.getMessage());
         }
-    }
-
-    private static void initLog() {
-        PatternLayout logPattern = new PatternLayout("%d{yyyyMMdd HH:mm:ss,SSS} | %-5p | [%c{1}] | %m%n");
-
-        ConsoleAppender console = new ConsoleAppender();
-        console.setName("ConsoleLogger");
-        console.setLayout(logPattern);
-        console.setThreshold(Level.DEBUG);
-        console.activateOptions();
-        Logger.getRootLogger().addAppender(console);
-
-        RollingFileAppender file = new RollingFileAppender();
-        file.setName("FileLogger");
-        file.setFile("/tmp/logs/app.log");
-        file.setLayout(logPattern);
-        file.setThreshold(Level.INFO);
-        file.setAppend(true);
-        file.activateOptions();
-        file.setMaxFileSize("10MB");
-        file.setMaxBackupIndex(5);
-        Logger.getRootLogger().addAppender(file);
     }
 }

@@ -13,11 +13,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EventManager {
 
-    private static Logger logger = Logger.getLogger(EventManager.class);
+    private static Logger logger = LogManager.getLogger(EventManager.class);
 
     private final Serial serial;
     private LedCommand lastLedCommand = null;

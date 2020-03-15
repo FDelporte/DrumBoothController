@@ -14,10 +14,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LedControlPanel extends HBox implements EventListener {
-    private static Logger logger = Logger.getLogger(LedControlPanel.class);
+    private static Logger logger = LogManager.getLogger(LedControlPanel.class);
 
     private final EventManager eventManager;
 
