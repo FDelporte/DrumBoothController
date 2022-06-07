@@ -22,14 +22,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class App extends Application {
-    private static Logger logger = LogManager.getLogger(App.class);
+
+    private static final Logger logger = LogManager.getLogger(App.class);
 
     private static final String SERIAL_DEVICE = "/dev/ttyACM0";
     private static final Baud SERIAL_SPEED = Baud._115200;
     private static final int WEBSERVER_PORT = 8080;
     private static final String WEBSERVER_HOST = "192.168.0.160";
 
-    private static EventManager eventManager;
+    private EventManager eventManager;
 
     /**
      * Entry point of the application.
@@ -65,7 +66,7 @@ public class App extends Application {
         eventManager.setAllOff();
         logger.info("All relays in initial state");
 
-        // Set LED strips in start-up state
+        // Set LED strips in start.sh-up state
         eventManager.sendSerialCommand(LedCommand.getInitialState());
 
         var scene = new Scene(new MenuWindow(eventManager), 1024, 600);
@@ -104,12 +105,12 @@ public class App extends Application {
                     .flowControl(FlowControl.NONE);
 
             // Display connection details
-            logger.info("Connection: " + config.toString());
+            logger.info("Connection: {}", config);
 
             // Open the serial port with the configuration
             serial.open(config);
         } catch (Exception ex) {
-            logger.error("Could not start serial communication, error: " + ex.getMessage());
+            logger.error("Could not start.sh serial communication, error: {}", ex.getMessage());
         }
     }
 
@@ -121,7 +122,7 @@ public class App extends Application {
                     .build();
             server.start();
         } catch (Exception ex) {
-            logger.error("Could not start web server, error: " + ex.getMessage());
+            logger.error("Could not start.sh web server, error: {}", ex.getMessage());
         }
     }
 }

@@ -15,13 +15,13 @@ public enum LedEffect {
     ALL_WHITE("98", false, 0, 0, 0, false, false),
     ALL_OUT("99", false, 0, 0, 0, false, false);
 
-    private String id;
-    private boolean useSpeed;
-    private int initialSpeed;
-    private int minimumSpeed;
-    private int maximumSpeed;
-    private boolean useColor1;
-    private boolean useColor2;
+    private final String id;
+    private final boolean useSpeed;
+    private final int initialSpeed;
+    private final int minimumSpeed;
+    private final int maximumSpeed;
+    private final boolean useColor1;
+    private final boolean useColor2;
 
     LedEffect(String id, boolean useSpeed, int initialSpeed, int minimumSpeed, int maximumSpeed,
             boolean useColor1, boolean useColor2) {

@@ -1,3 +1,5 @@
 JavaFXUserInterface/.idea/
 JavaFXUserInterface/drumbooth.iml
 JavaFXUserInterface/target/
+/.idea/
+/JavaFXUserInterface/logs/*

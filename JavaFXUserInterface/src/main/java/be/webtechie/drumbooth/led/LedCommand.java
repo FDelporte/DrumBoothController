@@ -6,10 +6,10 @@ import javafx.scene.paint.Color;
  * LedCommand as it is exchanged with the Arduino.
  */
 public class LedCommand {
-    private LedEffect ledEffect;
-    private int speed;
-    private Color color1;
-    private Color color2;
+    private final LedEffect ledEffect;
+    private final int speed;
+    private final Color color1;
+    private final Color color2;
 
     /**
      * Initialize a {@link LedCommand} with speed and colors.

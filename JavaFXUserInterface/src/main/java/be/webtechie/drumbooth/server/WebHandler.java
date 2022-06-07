@@ -39,30 +39,35 @@ public class WebHandler implements HttpHandler {
     public void handleRequest(HttpServerExchange exchange) {
         String path = exchange.getRequestPath();
 
-        if (path.equals("/red-alert")) {
-            // All relays off
-            this.eventManager.setAllOff();
-            // Relay ON as state of TL is inverted
-            this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
-            // Blinking red on LED strips
-            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 50, Color.RED, Color.WHITE));
-            this.returnSuccess(exchange, "RED ALERT message has been sent");
-        } else if (path.equals("/all-white")) {
-            // All relays off = TL on
-            this.eventManager.setAllOff();
-            // LED strips full white
-            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
-            this.returnSuccess(exchange, "ALL WHITE message has been sent");
-        } else if (path.equals("/all-out")) {
-            // All relays off
-            this.eventManager.setAllOff();
-            // Relay ON as state of TL is inverted
-            this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
-            // LED Strips off
-            this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
-            this.returnSuccess(exchange, "ALL OUT message has been sent");
-        } else {
-            this.returnError(exchange, StatusCodes.NOT_FOUND, "The requested path is not available");
+        switch (path) {
+            case "/red-alert":
+                // All relays off
+                this.eventManager.setAllOff();
+                // Relay ON as state of TL is inverted
+                this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
+                // Blinking red on LED strips
+                this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 50, Color.RED, Color.WHITE));
+                this.returnSuccess(exchange, "RED ALERT message has been sent");
+                break;
+            case "/all-white":
+                // All relays off = TL on
+                this.eventManager.setAllOff();
+                // LED strips full white
+                this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_WHITE, 10, Color.WHITE, Color.BLACK));
+                this.returnSuccess(exchange, "ALL WHITE message has been sent");
+                break;
+            case "/all-out":
+                // All relays off
+                this.eventManager.setAllOff();
+                // Relay ON as state of TL is inverted
+                this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
+                // LED Strips off
+                this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
+                this.returnSuccess(exchange, "ALL OUT message has been sent");
+                break;
+            default:
+                this.returnError(exchange, StatusCodes.NOT_FOUND, "The requested path is not available");
+                break;
         }
     }
 
@@ -151,7 +156,7 @@ public class WebHandler implements HttpHandler {
                 .append("       </ul>\n")
                 .append("       ").append(content).append("\n")
                 .append("       <br/><br/>")
-                .append(lastLedCommandOutput.toString())
+                .append(lastLedCommandOutput)
                 .append("   </body>\n ")
                 .append("</html>");
         exchange.getResponseHeaders().put(Headers.CONTENT_LENGTH, sb.toString().length());

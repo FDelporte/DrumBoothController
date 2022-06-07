@@ -8,8 +8,6 @@ import be.webtechie.drumbooth.relay.definition.Board;
 import be.webtechie.drumbooth.relay.definition.Relay;
 import be.webtechie.drumbooth.relay.definition.State;
 import be.webtechie.drumbooth.ui.component.RelayToggleSwitch;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -19,12 +17,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.ToggleSwitch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Builder for a screen with two rows with four toggle switches.
  */
 public class RelayPanel extends VBox implements EventListener {
 
-    private static Logger logger = LogManager.getLogger(RelayPanel.class);
+    private static final Logger logger = LogManager.getLogger(RelayPanel.class);
 
     private final EventManager eventManager;
     private final List<RelayToggleSwitch> relayToggleSwitches;
@@ -106,12 +107,12 @@ public class RelayPanel extends VBox implements EventListener {
     }
 
     private void changeToggleSwitch(ToggleSwitch toggleSwitch) {
-        logger.info("Changing toggle switch " + toggleSwitch);
+        logger.info("Changing toggle switch {}", toggleSwitch);
         toggleSwitch.setSelected(!toggleSwitch.isSelected());
     }
 
     private void toggleRelay(RelayToggleSwitch relayToggleSwitch) {
-        logger.info("Toggling relay " + relayToggleSwitch.getBoard() + ":" + relayToggleSwitch.getRelay());
+        logger.info("Toggling relay {}: {}", relayToggleSwitch.getBoard(), relayToggleSwitch.getRelay());
         this.eventManager.sendRelayCommand(new RelayCommand(
                 relayToggleSwitch.getBoard(),
                 relayToggleSwitch.getRelay(),
@@ -141,11 +142,11 @@ public class RelayPanel extends VBox implements EventListener {
         for (RelayToggleSwitch relayToggleSwitch : this.relayToggleSwitches) {
             if (relayToggleSwitch.getBoard() == relayCommand.getBoard()
                 && relayToggleSwitch.getRelay() == relayCommand.getRelay()) {
-                logger.info("Need to toggle UI for: " + relayCommand.getBoard() + "-" + relayCommand.getRelay());
-                relayToggleSwitch.setSelected(
-                        relayCommand.getState() == State.STATE_ON ?
-                                (relayToggleSwitch.isInverted() ? false : true) :
-                                (relayToggleSwitch.isInverted() ? true : false));
+                logger.info("Need to toggle UI for: {} - {}", relayCommand.getBoard(), relayCommand.getRelay());
+                var setTo = relayCommand.getState() == State.STATE_ON ?
+                                (!relayToggleSwitch.isInverted()) :
+                                (relayToggleSwitch.isInverted());
+                relayToggleSwitch.setSelected(setTo);
             }
         }
     }

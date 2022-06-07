@@ -1,11 +1,14 @@
 package be.webtechie.drumbooth.event;
 
+import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.relay.RelayCommand;
 import be.webtechie.drumbooth.relay.definition.Board;
 import be.webtechie.drumbooth.relay.definition.Relay;
 import be.webtechie.drumbooth.relay.definition.State;
-import be.webtechie.drumbooth.led.LedCommand;
 import com.pi4j.io.serial.Serial;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,17 +16,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EventManager {
 
-    private static Logger logger = LogManager.getLogger(EventManager.class);
+    private static final Logger logger = LogManager.getLogger(EventManager.class);
 
     private final Serial serial;
     private LedCommand lastLedCommand = null;
-    private RelayCommand lastRelayCommand = null;
-
 
     public EventManager(Serial serial) {
         this.serial = serial;
@@ -32,7 +31,7 @@ public class EventManager {
     /**
      * The list with components to be notified of a new LedCommand received from Mosquitto.
      */
-    private List<EventListener> eventListeners = new ArrayList<>();
+    private final List<EventListener> eventListeners = new ArrayList<>();
 
     /**
      * Used by every component which wants to be notified of new events.
@@ -55,12 +54,11 @@ public class EventManager {
         try {
             this.serial.writeln(ledCommand.toCommandString());
         } catch (Exception ex) {
-            logger.error("Error while sending : " + ex.getMessage());
+            logger.error("Error while sending: {}", ex.getMessage());
         }
     }
 
     public void sendRelayCommand(RelayCommand relayCommand) {
-        this.lastRelayCommand = relayCommand;
         this.eventListeners.forEach(l -> l.onRelayChange(relayCommand));
 
         String cmd = "i2cset -y 1"
@@ -70,10 +68,8 @@ public class EventManager {
 
         execute(cmd);
 
-        logger.info(relayCommand.getRelay()
-                + " on " + relayCommand.getBoard()
-                + " set to " + relayCommand.getState()
-                + " with command: " + cmd);
+        logger.info("{} on {} set to {} with command: {}",
+                relayCommand.getRelay(), relayCommand.getBoard(), relayCommand.getState(), cmd);
     }
 
     /**
@@ -110,13 +106,6 @@ public class EventManager {
     }
 
     /**
-     * @return The last {@link RelayCommand} sent to the relay board.
-     */
-    public RelayCommand getLastRelayCommand() {
-        return this.lastRelayCommand;
-    }
-
-    /**
      * Convert the value to HEX byte string.
      *
      * @param value Numeric value
@@ -133,7 +122,7 @@ public class EventManager {
      */
     private static void execute(String cmd) {
         try {
-            logger.info("Executing: " + cmd);
+            logger.info("Executing: {}", cmd);
 
             // Get a process to be able to do native calls on the operating system.
             // You can compare this to opening a terminal window and running a command.
@@ -143,21 +132,21 @@ public class EventManager {
             // so we will now if something goes wrong.
             InputStream error = p.getErrorStream();
             for (int i = 0; i < error.available(); i++) {
-                logger.error("CMD error: " + error.read());
+                logger.error("CMD error: {}", error.read());
             }
 
             // Get the output stream of the process and print it
             String line;
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while ((line = input.readLine()) != null) {
-                logger.info("CMD info: " + line);
+                logger.info("CMD info: {}", line);
             }
             input.close();
 
             // We don't need the process anymore.
             p.destroy();
         } catch (IOException ex) {
-            logger.error("Error while sending relay I²C command: " + ex.getMessage());
+            logger.error("Error while sending relay I²C command: {}", ex.getMessage());
         }
     }
 
