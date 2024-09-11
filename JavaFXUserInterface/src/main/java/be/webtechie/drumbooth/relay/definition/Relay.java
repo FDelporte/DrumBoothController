@@ -1,18 +1,20 @@
 package be.webtechie.drumbooth.relay.definition;
 
 public enum Relay {
-    RELAY_1((byte) 0x01),
-    RELAY_2((byte) 0x02),
-    RELAY_3((byte) 0x03),
-    RELAY_4((byte) 0x04);
+    RELAY_1(5),
+    RELAY_2(6),
+    RELAY_3(13),
+    RELAY_4(16),
+    RELAY_5(19),
+    RELAY_6(20);
 
-    private final byte channel;
+    private final int bcm;
 
-    Relay(byte channel) {
-        this.channel = channel;
+    Relay(int bcm) {
+        this.bcm = bcm;
     }
 
-    public byte getChannel() {
-        return this.channel;
+    public int getBcm() {
+        return this.bcm;
     }
 }

@@ -7,14 +7,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Builder for the exit screen.
  */
 public class ExitPanel extends VBox {
-    private static Logger logger = LogManager.getLogger(ExitPanel.class);
 
     private final EventManager eventManager;
 
@@ -46,7 +43,7 @@ public class ExitPanel extends VBox {
             Process p = Runtime.getRuntime().exec(new String[]{"shutdown", "now"});
             p.waitFor();
         } catch (Exception ex) {
-            logger.error("Exit error: " + ex.getMessage());
+            //logger.error("Exit error: " + ex.getMessage());
         }
 
         Platform.exit();

@@ -5,6 +5,7 @@ import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
 import be.webtechie.drumbooth.relay.RelayCommand;
+import com.pi4j.util.Console;
 import eu.hansolo.fx.colorselector.ColorSelector;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
@@ -14,12 +15,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class LedControlPanel extends HBox implements EventListener {
-    private static Logger logger = LogManager.getLogger(LedControlPanel.class);
 
+    private final Console console;
     private final EventManager eventManager;
 
     private final ColorSelector colorSelector1;
@@ -46,7 +45,8 @@ public class LedControlPanel extends HBox implements EventListener {
     /**
      * Construct the UI.
      */
-    public LedControlPanel(EventManager eventManager) {
+    public LedControlPanel(Console console, EventManager eventManager) {
+        this.console = console;
         this.eventManager = eventManager;
         this.eventManager.addListener(this);
 
@@ -178,7 +178,7 @@ public class LedControlPanel extends HBox implements EventListener {
                 this.colorSelector2.getSelectedColor()
         );
 
-        logger.info("Sending to Arduino: " + ledCommand.toCommandString());
+        console.println("Sending to Arduino: " + ledCommand.toCommandString());
 
         this.eventManager.sendSerialCommand(ledCommand);
     }

@@ -1,12 +1,11 @@
 package be.webtechie.drumbooth.server;
 
 import be.webtechie.drumbooth.event.EventManager;
-import be.webtechie.drumbooth.relay.RelayCommand;
-import be.webtechie.drumbooth.relay.definition.Board;
-import be.webtechie.drumbooth.relay.definition.Relay;
-import be.webtechie.drumbooth.relay.definition.State;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
+import be.webtechie.drumbooth.relay.RelayCommand;
+import be.webtechie.drumbooth.relay.definition.Relay;
+import be.webtechie.drumbooth.relay.definition.State;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -44,7 +43,7 @@ public class WebHandler implements HttpHandler {
                 // All relays off
                 this.eventManager.setAllOff();
                 // Relay ON as state of TL is inverted
-                this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
+                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_1, State.STATE_ON));
                 // Blinking red on LED strips
                 this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 50, Color.RED, Color.WHITE));
                 this.returnSuccess(exchange, "RED ALERT message has been sent");
@@ -60,7 +59,7 @@ public class WebHandler implements HttpHandler {
                 // All relays off
                 this.eventManager.setAllOff();
                 // Relay ON as state of TL is inverted
-                this.eventManager.sendRelayCommand(new RelayCommand(Board.BOARD_1, Relay.RELAY_1, State.STATE_ON));
+                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_1, State.STATE_ON));
                 // LED Strips off
                 this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
                 this.returnSuccess(exchange, "ALL OUT message has been sent");
@@ -75,7 +74,7 @@ public class WebHandler implements HttpHandler {
      * Return a success page.
      *
      * @param exchange {@link HttpServerExchange}
-     * @param message The message to be shown on the page
+     * @param message  The message to be shown on the page
      */
     private void returnSuccess(HttpServerExchange exchange, String message) {
         this.returnPage(exchange, StatusCodes.OK, "LED command handled", message);
@@ -84,9 +83,9 @@ public class WebHandler implements HttpHandler {
     /**
      * Return an error page.
      *
-     * @param exchange {@link HttpServerExchange}
+     * @param exchange   {@link HttpServerExchange}
      * @param statusCode HTTP status code
-     * @param message The message to be shown on the page
+     * @param message    The message to be shown on the page
      */
     private void returnError(HttpServerExchange exchange, int statusCode, String message) {
         this.returnPage(exchange, statusCode, "Error", message);
@@ -95,10 +94,10 @@ public class WebHandler implements HttpHandler {
     /**
      * Create and return the page.
      *
-     * @param exchange {@link HttpServerExchange}
+     * @param exchange   {@link HttpServerExchange}
      * @param statusCode HTTP status code
-     * @param title Title of the page
-     * @param content Content of the page
+     * @param title      Title of the page
+     * @param content    Content of the page
      */
     private void returnPage(HttpServerExchange exchange, int statusCode, String title, String content) {
         StringBuilder lastLedCommandOutput = new StringBuilder();

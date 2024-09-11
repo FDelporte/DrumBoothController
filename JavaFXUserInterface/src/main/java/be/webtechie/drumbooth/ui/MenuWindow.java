@@ -1,6 +1,7 @@
 package be.webtechie.drumbooth.ui;
 
 import be.webtechie.drumbooth.event.EventManager;
+import com.pi4j.util.Console;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -19,7 +20,7 @@ public class MenuWindow extends HBox {
     /**
      * Construct the main UI with the menu buttons.
      */
-    public MenuWindow(EventManager eventManager) {
+    public MenuWindow(Console console, EventManager eventManager) {
         this.setSpacing(25);
         this.getStylesheets().add("style.css");
         this.getStyleClass().add("bg");
@@ -29,10 +30,10 @@ public class MenuWindow extends HBox {
         this.pane = new StackPane();
         this.getChildren().add(this.pane);
 
-        RelayPanel relayPanel = new RelayPanel(eventManager);
+        RelayPanel relayPanel = new RelayPanel(console, eventManager);
         this.relayButtons = new Group(relayPanel);
 
-        LedControlPanel ledControlPanel = new LedControlPanel(eventManager);
+        LedControlPanel ledControlPanel = new LedControlPanel(console, eventManager);
         this.ledStrips = new Group(ledControlPanel);
 
         ExitPanel exitPanel = new ExitPanel(eventManager);

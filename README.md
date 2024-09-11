@@ -1,16 +1,34 @@
 # Drum booth controller
 
-JavaFX UI + Arduino project to control the lights and LED strips in a drum booth.
+JavaFX UI running on Raspberry Pi with relays and a serial connection to an Arduino to control the lights and LED strips in a drum booth.
 
-This project combines multiple examples of the book ["Getting started with Java on Raspberry Pi"](https://leanpub.com/gettingstartedwithjavaontheraspberrypi/). The sources of the examples in this book are freely available on [GitHub](https://github.com/FDelporte/JavaOnRaspberryPi). For more info see ["Drumbooth controller with Raspberry Pi and JavaFX"](https://webtechie.be/post/2020-03-30-drumbooth-controller-with-java-javafx-raspberrypi-arduino/).
+This project combines multiple examples of the book ["Getting started with Java on Raspberry Pi"](https://leanpub.com/gettingstartedwithjavaontheraspberrypi/). All the sources of the examples in this book are freely available on [GitHub](https://github.com/FDelporte/JavaOnRaspberryPi). 
 
-![](images/ledstrips-rainbow-effect.jpg)
+![LED strips on the ceiling of the drum booth](images/ledstrips-rainbow-effect.jpg)
+
+## History of this Project
+
+As Java, JavaFX, and the used hardware has evolved, the main branch deviated from the original blog post.
+
+### 202409 Waveshare Raspberry Pi Zero
+
+
+### 202003 Raspberry Pi with I2C stack-on relays boards
+
+Full description is available in this blog post: ["Drumbooth controller with Raspberry Pi and JavaFX"](https://webtechie.be/post/2020-03-30-drumbooth-controller-with-java-javafx-raspberrypi-arduino/).
+
+If you need the sources of this version, please check-out the tag [i2c-relays](https://github.com/FDelporte/DrumBoothController/releases/tag/i2c-relays).
 
 ## Wiring
 
-* USB cable between both boards (for serial communication)
-* 5V and ground from power supply to Pi, Arduino and LED strips
-* Control cable between pins 6, 7 and 8 to each of the three LED strips
+* Shared
+  * USB cable between both boards (for serial communication)
+  * 5V and ground from power supply to Pi, Arduino and LED strips
+* Raspberry Pi
+  * Raspberry Pi Zero 2 W
+  * Mounted in a [Waveshare Industrial 6-ch Relay Module for Raspberry Pi Zero, RS485/CAN, Isolated Protections](https://www.waveshare.com/product/raspberry-pi/boards-kits/raspberry-pi-zero-2-w-cat/rpi-zero-relay.htm)
+* Arduino
+  * Control cable between pins 6, 7 and 8 to each of the three LED strips
 
 ![Wiring scheme](images/drumbooth-wiring.png)
 ![Installation](images/installation.jpg)
