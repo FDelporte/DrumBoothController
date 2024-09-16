@@ -107,7 +107,9 @@ $ sudo apt install zulu22-jdk
 
 ```shell
 $ sudo java -version
-
+openjdk version "22.0.2" 2024-07-16
+OpenJDK Runtime Environment Zulu22.32+15-CA (build 22.0.2+9)
+OpenJDK 64-Bit Server VM Zulu22.32+15-CA (build 22.0.2+9, mixed mode, sharing)
 ```
 
 * Download the JavaFX runtime
