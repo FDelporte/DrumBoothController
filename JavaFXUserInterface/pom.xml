@@ -3,11 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>be.webtechie</groupId>
     <artifactId>drumbooth</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
+        <main.class>be.webtechie.drumbooth.AppLauncher</main.class>
 
         <!-- DEPENDENCIES -->
         <controlsfx.version>11.2.1</controlsfx.version>
@@ -18,8 +19,10 @@
         <undertow.version>2.3.17.Final</undertow.version>
 
         <!-- BUILD PLUGIN VERSIONS -->
-        <maven.compiler.version>3.13.0</maven.compiler.version>
         <maven.assembly.version>3.7.1</maven.assembly.version>
+        <maven.compiler.version>3.13.0</maven.compiler.version>
+        <maven.jar.version>3.1.0</maven.jar.version>
+        <maven.shade.version>3.2.4</maven.shade.version>
     </properties>
 
     <dependencies>
@@ -81,36 +84,61 @@
 
     <build>
         <plugins>
+
+            <!--
+            https://maven.apache.org/plugins/maven-compiler-plugin/
+            The Compiler Plugin is used to compile the sources of your project.
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <verbose>false</verbose>
                 </configuration>
             </plugin>
 
+            <!--
+            https://maven.apache.org/plugins/maven-jar-plugin/
+            This plugin provides the capability to build (executable) jars and is used here to set the mainClass
+            which will start the application.
+            -->
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven.assembly.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven.jar.version}</version>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>be.webtechie.drumbooth.App</mainClass>
+                            <mainClass>${main.class}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <!--
+            https://maven.apache.org/plugins/maven-shade-plugin/
+            This plugin provides the capability to package the artifact in an uber-jar, including its dependencies and
+            to shade - i.e. rename - the packages of some of the dependencies. The transformer will combine the files
+            in the META-INF.services directories of multiple Pi4J plugins with the same package name into one file.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.shade.version}</version>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                    </transformers>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
                     </execution>
                 </executions>

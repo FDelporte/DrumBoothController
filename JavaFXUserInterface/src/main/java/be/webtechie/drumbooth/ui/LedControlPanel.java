@@ -8,6 +8,7 @@ import be.webtechie.drumbooth.relay.RelayCommand;
 import com.pi4j.util.Console;
 import eu.hansolo.fx.colorselector.ColorSelector;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -51,6 +52,7 @@ public class LedControlPanel extends HBox implements EventListener {
         this.eventManager.addListener(this);
 
         this.setSpacing(25);
+        this.setPadding(new Insets(0, 0, 0, 25));
 
         VBox colorSelectors = new VBox();
         colorSelectors.setSpacing(25);

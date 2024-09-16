@@ -4,8 +4,8 @@ import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.led.LedEffect;
 import be.webtechie.drumbooth.relay.RelayCommand;
-import be.webtechie.drumbooth.relay.definition.Relay;
-import be.webtechie.drumbooth.relay.definition.State;
+import be.webtechie.drumbooth.relay.Relay;
+import com.pi4j.io.gpio.digital.DigitalState;
 import io.undertow.io.Sender;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -42,8 +42,9 @@ public class WebHandler implements HttpHandler {
             case "/red-alert":
                 // All relays off
                 this.eventManager.setAllOff();
-                // Relay ON as state of TL is inverted
-                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_1, State.STATE_ON));
+                // Switch on white lights
+                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_1, DigitalState.HIGH));
+                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_2, DigitalState.HIGH));
                 // Blinking red on LED strips
                 this.eventManager.sendSerialCommand(new LedCommand(LedEffect.BLINKING, 50, Color.RED, Color.WHITE));
                 this.returnSuccess(exchange, "RED ALERT message has been sent");
@@ -58,8 +59,9 @@ public class WebHandler implements HttpHandler {
             case "/all-out":
                 // All relays off
                 this.eventManager.setAllOff();
-                // Relay ON as state of TL is inverted
-                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_1, State.STATE_ON));
+                // Switch on white lights
+                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_1, DigitalState.HIGH));
+                this.eventManager.sendRelayCommand(new RelayCommand(Relay.RELAY_2, DigitalState.HIGH));
                 // LED Strips off
                 this.eventManager.sendSerialCommand(new LedCommand(LedEffect.ALL_OUT, 10, Color.BLACK, Color.BLACK));
                 this.returnSuccess(exchange, "ALL OUT message has been sent");

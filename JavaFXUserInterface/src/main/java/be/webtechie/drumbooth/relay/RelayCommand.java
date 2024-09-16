@@ -1,9 +1,8 @@
 package be.webtechie.drumbooth.relay;
 
-import be.webtechie.drumbooth.relay.definition.Relay;
-import be.webtechie.drumbooth.relay.definition.State;
+import com.pi4j.io.gpio.digital.DigitalState;
 
 /**
  * RelayCommand as it is exchanged with the relay board.
  */
-public record RelayCommand(Relay relay, State state) {}
+public record RelayCommand(Relay relay, DigitalState state) {}

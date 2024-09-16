@@ -1,5 +1,6 @@
-JavaFXUserInterface/.idea/
-JavaFXUserInterface/drumbooth.iml
-JavaFXUserInterface/target/
 /.idea/
+JavaFXUserInterface/.idea/
+JavaFXUserInterface/*.iml
+JavaFXUserInterface/target/
 /JavaFXUserInterface/logs/*
+/JavaFXUserInterface/dependency-reduced-pom.xml

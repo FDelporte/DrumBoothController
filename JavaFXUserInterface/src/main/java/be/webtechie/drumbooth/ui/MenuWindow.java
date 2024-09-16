@@ -3,6 +3,7 @@ package be.webtechie.drumbooth.ui;
 import be.webtechie.drumbooth.event.EventManager;
 import com.pi4j.util.Console;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -24,6 +25,7 @@ public class MenuWindow extends HBox {
         this.setSpacing(25);
         this.getStylesheets().add("style.css");
         this.getStyleClass().add("bg");
+        this.setFillHeight(true);
 
         this.getChildren().add(this.getMainMenu());
 
@@ -49,6 +51,7 @@ public class MenuWindow extends HBox {
      */
     private VBox getMainMenu() {
         final VBox buttons = new VBox();
+        buttons.setAlignment(Pos.CENTER_LEFT);
         buttons.setPadding(new Insets(5, 5, 5, 5));
         buttons.setSpacing(5);
 

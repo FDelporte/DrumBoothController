@@ -12,20 +12,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class App extends Application {
+public class DrumBoothController extends Application {
 
-    private static final String SERIAL_DEVICE = "/dev/ttyACM0";
+    private static final String SERIAL_DEVICE = "/dev/tty0";
     private static final int WEBSERVER_PORT = 8080;
-    private static final String WEBSERVER_HOST = "192.168.0.160";
+    private static final String WEBSERVER_HOST = "172.16.1.50";
     private final Console console = new Console();
     private EventManager eventManager;
 
     /**
      * Entry point of the application.
-     *
-     * @param args Command line arguments
      */
-    public static void main(String[] args) {
+    public void run() {
+        console.println("Starting UI");
         launch();
     }
 
@@ -43,10 +42,6 @@ public class App extends Application {
 
         // Initialize the web server
         this.startWebServer();
-
-        // Set all relays out, to make sure they match with the UI
-        eventManager.setAllOff();
-        console.println("All relays in initial state");
 
         // Set LED strips in start.sh-up state
         eventManager.sendSerialCommand(LedCommand.getInitialState());

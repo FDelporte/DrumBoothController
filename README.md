@@ -52,46 +52,77 @@ The commands shared between both boards are strings in the structure “COMMAND_
 ![Web interface after selecting running light](images/web-running.png)
 ![eb interface after selecting "red alert"](images/web-redalert.png)
 
-### Build
+## Build and run on Raspberry Pi
 
-Build and copy the files to your Raspberry Pi
+These instructions are intended to be used with an ARMv8 Raspberry Pi (RPi4+ or RPi Zero 2) with Raspberry Pi OS 64-bit. In the following code examples, the user account is `drum` and the hostname `drumbooth`.
+
+### Install Visual Studio Code (if needed)
+
+After initial startup, you can run the following commands to also install Visual Studio Code if you want to test, modify, and/or build the code:
 
 ```shell
-$ mvn clean package
-$ scp target/drumbooth-0.0.1 pi@drumbooth.local://home/pi/drumbooth
-$ scp scripts/start.sh pi@drumbooth.local://home/pi/drumbooth
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install code
+```
+
+### Enable Serial
+
+The commands for the LED strips are sent via serial communication to the Arduino board, so it has to be enabled in `raspi-config`:
+
+```shell
+$ sudo rasp-config
+  > 3 Interface Options
+    > I6 Serial Port
+      > Login shell: no
+      > Serial hardware: yes
+  > Finish
+  > Reboot
+```
+
+### Build and Copy the JAR to the Raspberry Pi
+
+Build and copy the files to your Raspberry Pi from your development PC. Create the `drumbooth` directory before executing these commands the first time.
+
+```shell
+$ mvn package
+$ scp target/*dependencies.jar drum@drumbooth.local://home/drum/drumbooth
+$ scp target/distribution/* drum@drumbooth.local://home/drum/drumbooth
+$ scp scripts/start.sh drum@drumbooth.local://home/drum/drumbooth
 ```
 
 ### Running on Raspberry Pi
 
-* Install Pi4J v1 and WiringPi
+* Install JDK with JavaFX following the guidelines on :
 
 ```shell
-$ curl -sSL https://pi4j.com/install | sudo bash
-$ sudo pi4j --wiringpi
+$ sudo apt install gnupg ca-certificates curl
+$ curl -s https://repos.azul.com/azul-repo.key | sudo gpg --dearmor -o /usr/share/keyrings/azul.gpg
+$ echo "deb [signed-by=/usr/share/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" | sudo tee /etc/apt/sources.list.d/zulu.list
+$ sudo apt update
+$ sudo apt install zulu22-jdk
 ```
 
-* Copy this file to the Pi: "drumbooth-0.0.1-jar-with-dependencies.jar"
-* Install Java 11 on the Raspberry Pi if needed (with SDKMAN), we must use `sudo sdk install` to make the Java available for the sudo-user that also needs to be used to start the Pi4J application.
+* Check the Java version:
 
 ```shell
-$ sudo apt install zip
-$ curl -s "https://get.sdkman.io" | bash
-$ sudo sdk install java 11.0.13-zulu
+$ sudo java -version
+
 ```
 
 * Download the JavaFX runtime
 
 ```shell
-$ wget -O openjfx.zip https://gluonhq.com/download/javafx-17-ea-sdk-linux-arm32/
+$ wget -O openjfx.zip https://download2.gluonhq.com/openjfx/22.0.2/openjfx-22.0.2_linux-aarch64_bin-sdk.zip
 $ unzip openjfx.zip
-$ sudo mv javafx-sdk-17/ /opt/javafx-sdk-17/
+$ sudo mv javafx-sdk-22.0.2/ /opt/javafx-sdk/
+$ rm openjfx.zip
 ```
 
 * Run with the included script which can also be used at startup of the Pi to automatically launch the application
 
 ```
-sudo bash /home/pi/drumbooth/start.sh
+sudo bash /home/drum/drumbooth/start.sh
 ```
 
 ### TFT screen

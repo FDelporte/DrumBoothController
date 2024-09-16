@@ -4,9 +4,9 @@ import be.webtechie.drumbooth.event.EventListener;
 import be.webtechie.drumbooth.event.EventManager;
 import be.webtechie.drumbooth.led.LedCommand;
 import be.webtechie.drumbooth.relay.RelayCommand;
-import be.webtechie.drumbooth.relay.definition.Relay;
-import be.webtechie.drumbooth.relay.definition.State;
+import be.webtechie.drumbooth.relay.Relay;
 import be.webtechie.drumbooth.ui.component.RelayToggleSwitch;
+import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.util.Console;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -34,24 +34,24 @@ public class RelayPanel extends VBox implements EventListener {
         this.console = console;
         this.eventManager = eventManager;
         this.eventManager.addListener(this);
-
         this.relayToggleSwitches = new ArrayList<>();
 
         this.setSpacing(25);
-        this.setPadding(new Insets(25));
+        this.setPadding(new Insets(25, 25, 25, 125));
 
         HBox row1 = new HBox();
+        row1.setAlignment(Pos.CENTER);
         row1.setSpacing(25);
-        row1.getChildren().add(this.createRelayToggleSwitch("WIT", Relay.RELAY_1, true));
-        row1.getChildren().add(this.createRelayToggleSwitch("KLEUR", Relay.RELAY_2));
+        row1.getChildren().add(this.createRelayToggleSwitch("PANEEL", Relay.RELAY_1));
+        row1.getChildren().add(this.createRelayToggleSwitch("WIT", Relay.RELAY_2));
+        row1.getChildren().add(this.createRelayToggleSwitch("KLEUR", Relay.RELAY_3));
         this.getChildren().add(row1);
 
         HBox row2 = new HBox();
         row2.setSpacing(25);
-        row2.getChildren().add(this.createRelayToggleSwitch("STROBO", Relay.RELAY_3));
-        row2.getChildren().add(this.createRelayToggleSwitch("BOLSPOT", Relay.RELAY_4));
-        row2.getChildren().add(this.createRelayToggleSwitch("BOLMTR", Relay.RELAY_5));
-        row2.getChildren().add(this.createRelayToggleSwitch("-", Relay.RELAY_6));
+        row2.getChildren().add(this.createRelayToggleSwitch("STROBO", Relay.RELAY_4));
+        row2.getChildren().add(this.createRelayToggleSwitch("BOLSPOT", Relay.RELAY_5));
+        row2.getChildren().add(this.createRelayToggleSwitch("BOLMTR", Relay.RELAY_6));
         this.getChildren().add(row2);
 
         console.println("Toggle switch screen created");
@@ -60,37 +60,26 @@ public class RelayPanel extends VBox implements EventListener {
     /**
      * Create a ToggleSwitch which will call the RelayController on change.
      *
-     * @param label Label for the toggle switch
-     * @param relay The relay on the board to be controlled
-     * @return The created VBox with ToggleSwitch
-     */
-    private VBox createRelayToggleSwitch(String label, Relay relay) {
-        return this.createRelayToggleSwitch(label, relay, false);
-    }
-
-    /**
-     * Create a ToggleSwitch which will call the RelayController on change.
-     *
      * @param text     Label for the toggle switch
      * @param relay    The relay on the board to be controlled
-     * @param inverted Flag for relay on which the output is connected to the non-actived side
      * @return The created VBox with ToggleSwitch
      */
-    private VBox createRelayToggleSwitch(String text, Relay relay, boolean inverted) {
+    private VBox createRelayToggleSwitch(String text, Relay relay) {
         VBox toggleHolder = new VBox();
-        toggleHolder.setMinWidth(100);
+        toggleHolder.setMinWidth(150);
         toggleHolder.setAlignment(Pos.CENTER);
         toggleHolder.setSpacing(10);
         toggleHolder.setPadding(new Insets(10));
         toggleHolder.getStyleClass().add("toggleHolder");
 
         Label lbl = new Label(text);
-        lbl.setMinWidth(100);
+        lbl.setMinWidth(150);
         lbl.setAlignment(Pos.CENTER);
         lbl.getStyleClass().add("labelName");
         toggleHolder.getChildren().add(lbl);
 
-        RelayToggleSwitch relayToggleSwitch = new RelayToggleSwitch(relay, inverted);
+        RelayToggleSwitch relayToggleSwitch = new RelayToggleSwitch(relay);
+        relayToggleSwitch.setSelected(relay.getInitialState() == DigitalState.HIGH);
         relayToggleSwitch.selectedProperty().addListener((observable, oldValue, selected) -> toggleRelay(relayToggleSwitch));
         toggleHolder.getChildren().add(relayToggleSwitch);
         this.relayToggleSwitches.add(relayToggleSwitch);
@@ -101,17 +90,15 @@ public class RelayPanel extends VBox implements EventListener {
     }
 
     private void changeToggleSwitch(ToggleSwitch toggleSwitch) {
-        console.println("Changing toggle switch {}", toggleSwitch);
+        console.println("Changing toggle switch " + toggleSwitch);
         toggleSwitch.setSelected(!toggleSwitch.isSelected());
     }
 
     private void toggleRelay(RelayToggleSwitch relayToggleSwitch) {
-        console.println("Toggling relay {}", relayToggleSwitch.getRelay());
+        console.println("Toggling relay " + relayToggleSwitch.getRelay());
         this.eventManager.sendRelayCommand(new RelayCommand(
                 relayToggleSwitch.getRelay(),
-                relayToggleSwitch.isSelected() ?
-                        relayToggleSwitch.isInverted() ? State.STATE_OFF : State.STATE_ON :
-                        relayToggleSwitch.isInverted() ? State.STATE_ON : State.STATE_OFF));
+                (relayToggleSwitch.isSelected() ? DigitalState.HIGH : DigitalState.LOW)));
     }
 
     /**
@@ -134,9 +121,8 @@ public class RelayPanel extends VBox implements EventListener {
     public void onRelayChange(RelayCommand relayCommand) {
         for (RelayToggleSwitch relayToggleSwitch : this.relayToggleSwitches) {
             if (relayToggleSwitch.getRelay() == relayCommand.relay()) {
-                console.println("Need to toggle UI for: {}", relayCommand.relay());
-                var setTo = (relayCommand.state() == State.STATE_ON) == (!relayToggleSwitch.isInverted());
-                relayToggleSwitch.setSelected(setTo);
+                console.println("Need to toggle UI for: " + relayCommand.relay());
+                relayToggleSwitch.setSelected(relayCommand.state() == DigitalState.HIGH);
             }
         }
     }
