@@ -2,7 +2,6 @@
 export ENABLE_GLUON_COMMERCIAL_EXTENSIONS=true
 java \
   -Degl.displayid=/dev/dri/card0 \
-  -Dmonocle.egl.lib=/opt/javafx/lib/libgluon_drm-1.1.3.so \
   -Djava.library.path=/opt/javafx-sdk/lib \
   -Dmonocle.platform.traceConfig=false \
   -Dprism.verbose=false \
