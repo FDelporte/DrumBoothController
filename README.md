@@ -127,6 +127,14 @@ $ rm openjfx.zip
 sudo bash /home/drum/drumbooth/start.sh
 ```
 
+### Kiosk mode
+
+```shell
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install libgl1-mesa-glx
+```
+
 ### TFT screen
 
 
