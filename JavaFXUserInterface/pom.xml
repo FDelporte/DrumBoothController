@@ -16,7 +16,7 @@
         <jserialcomm.version>2.10.2</jserialcomm.version>
         <slf4j.version>2.0.12</slf4j.version>
         <pi4j.version>2.6.1</pi4j.version>
-        <undertow.version>2.3.20.Final</undertow.version>
+        <undertow.version>2.3.21.Final</undertow.version>
 
         <!-- BUILD PLUGIN VERSIONS -->
         <maven.assembly.version>3.7.1</maven.assembly.version>
